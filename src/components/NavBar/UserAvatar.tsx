@@ -14,11 +14,11 @@ import { logOut } from "@/actions/logOut"
 import { useRouter } from "next/navigation"
 import { type User } from "@supabase/supabase-js"
 
-type UserAvatarProps = {
+type Props = {
   supabaseUser: User
 }
 
-export function UserAvatar({ supabaseUser }: UserAvatarProps) {
+export function UserAvatar({ supabaseUser }: Props) {
   const router = useRouter()
 
   async function signOut() {

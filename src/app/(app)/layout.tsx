@@ -14,7 +14,10 @@ export default async function AppLayout({
   return (
     <UserProvider supabaseUser={user}>
       <NavBar />
-      {children}
+
+      <main>
+        {children}
+      </main>
     </UserProvider>
   )
 }
