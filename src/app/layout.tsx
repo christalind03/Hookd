@@ -1,6 +1,4 @@
 import type { Metadata } from "next"
-import { createClient } from "@/utils/supabase/server"
-import { UserProvider } from "@/components/UserProvider"
 import { Poppins } from "next/font/google"
 import { cn } from "@/utils/shadcn"
 import "./globals.css"
@@ -21,12 +19,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const supabaseClient = await createClient()
-
-  const {
-    data: { user },
-  } = await supabaseClient.auth.getUser()
-
   return (
     <html lang="en">
       <body
@@ -35,7 +27,7 @@ export default async function RootLayout({
           fontPoppins.variable
         )}
       >
-        <UserProvider supabaseUser={user}>{children}</UserProvider>
+        {children}
       </body>
     </html>
   )
