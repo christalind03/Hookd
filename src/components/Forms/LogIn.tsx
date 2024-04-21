@@ -49,7 +49,7 @@ export function LogIn() {
       return
     }
 
-    router.push("/")
+    router.push("/home")
   }
 
   return (

@@ -52,7 +52,7 @@ export function SubmitPost() {
       return
     }
 
-    router.push("/")
+    router.push("/home")
   }
 
   return (
