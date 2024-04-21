@@ -13,7 +13,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { Input } from "@/components/ui/Input"
 
 import { type Error, isError } from "@/types/Error"
-import { login } from "@/actions/login"
+import { logIn } from "@/actions/logIn"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -42,7 +42,7 @@ export function LoginForm() {
   const router = useRouter()
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
-    const serverResponse = await login(formData)
+    const serverResponse = await logIn(formData)
 
     if (isError(serverResponse)) {
       setError(serverResponse)

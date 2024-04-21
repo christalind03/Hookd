@@ -7,7 +7,7 @@ type LoginCredentials = {
   password: string
 }
 
-export async function login(formData: LoginCredentials) {
+export async function logIn(formData: LoginCredentials) {
   const supabaseClient = await createClient()
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
