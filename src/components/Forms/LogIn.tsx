@@ -2,6 +2,7 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert"
 import { Button } from "@/components/ui/Button"
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import {
   Form,
   FormControl,
@@ -9,7 +10,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/Form"
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { Input } from "@/components/ui/Input"
 
 import { type Error, isError } from "@/types/Error"
@@ -25,11 +25,11 @@ const formSchema = z.object({
     message: "Invalid email address.",
   }),
   password: z.string().min(1, {
-    message: "Password field cannot be empty.",
+    message: "Password cannot be empty.",
   }),
 })
 
-export function LoginForm() {
+export function LogIn() {
   const [error, setError] = useState<Error>()
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {

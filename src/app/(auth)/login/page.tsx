@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/LoginForm"
+import { LogIn } from "@/components/Forms/LogIn"
 
 export default function Login() {
   return (
@@ -12,7 +12,7 @@ export default function Login() {
         <p className="mb-3 text-sm">
           Welcome back to Threadify! Let's stitch together.
         </p>
-        <LoginForm />
+        <LogIn />
       </div>
     </div>
   )
