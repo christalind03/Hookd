@@ -12,9 +12,10 @@ import { Link2Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
 
 type Props = {
   isAuthor: boolean
+  onDelete: () => void
 }
 
-export function PostActions({ isAuthor }: Props) {
+export function PostActions({ isAuthor, onDelete }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuContent align="end" className="w-36" forceMount>
@@ -30,7 +31,7 @@ export function PostActions({ isAuthor }: Props) {
               <IconLabel text="Edit Post" icon={<Pencil1Icon />} />
             </DropdownMenuItem>
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onDelete()}>
               <IconLabel
                 text="Delete Post"
                 icon={<TrashIcon />}

@@ -1,5 +1,4 @@
-import { PostActions } from "@/components/PostActions"
-import { convertTimestamp } from "@/utils/convertTimestamp"
+import { Post } from "@/components/Post"
 import { createClient } from "@/utils/supabase/server"
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
   }
 }
 
-export default async function Post({ params: { id } }: Props) {
+export default async function PostID({ params: { id } }: Props) {
   const supabaseClient = await createClient()
 
   const {
@@ -23,33 +22,5 @@ export default async function Post({ params: { id } }: Props) {
     })
     .single()
 
-  if (data) {
-    return (
-      <div className="flex items-center justify-center m-10">
-        <div className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]">
-          <div className="flex items-center justify-between">
-            <p className="text-muted-foreground text-[10px]">
-              {convertTimestamp(data.creationTimestamp)}
-            </p>
-
-            <PostActions isAuthor={data.creatorID === user?.id} />
-          </div>
-
-          <h3 className="font-extrabold text-3xl">{data.title}</h3>
-          <p>{data.description}</p>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex flex-col gap-3 items-center justify-center m-10">
-      <h3 className="font-extrabold text-3xl">Uh oh!</h3>
-
-      <div className="text-center">
-        <p>This page doesn't exist.</p>
-        <p>Try searching for something else.</p>
-      </div>
-    </div>
-  )
+  return <Post postData={data} userID={user?.id || ""} />
 }
