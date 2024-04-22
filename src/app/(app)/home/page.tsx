@@ -5,10 +5,14 @@ import { Separator } from "@/components/ui/Separator"
 export default async function Home() {
   const supabaseClient = await createClient()
 
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser()
+
   const { data, error } = await supabaseClient
     .from("post")
     .select("*")
-    .order("creationTime", { ascending: false })
+    .order("creationTimestamp", { ascending: false })
 
   return (
     <div className="flex flex-col gap-5 items-center justify-center m-10">
@@ -18,7 +22,7 @@ export default async function Home() {
           key={postData.id}
         >
           {!!postIndex && <Separator />}
-          <PostPreview postData={postData} />
+          <PostPreview postData={postData} userID={user?.id || ""} />
         </div>
       ))}
     </div>

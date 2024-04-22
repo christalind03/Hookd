@@ -9,6 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
+import { ExitIcon } from "@radix-ui/react-icons"
+import { IconLabel } from "@/components/IconLabel"
 
 import { logOut } from "@/actions/logOut"
 import { useRouter } from "next/navigation"
@@ -40,7 +42,9 @@ export function UserAvatar({ supabaseUser }: Props) {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={() => signOut()}>Log Out</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut()}>
+          <IconLabel text="Log Out" icon={<ExitIcon />} isDestructive />
+        </DropdownMenuItem>
       </DropdownMenuContent>
 
       <DropdownMenuTrigger asChild>

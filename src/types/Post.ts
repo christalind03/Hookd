@@ -4,7 +4,7 @@ export type Post = {
   description: string
   notes: string
   creatorID: string
-  creationTime: string
+  creationTimestamp: string
 }
 
 export function isPost(obj: any): obj is Post {
@@ -16,6 +16,6 @@ export function isPost(obj: any): obj is Post {
     typeof obj.description === "string" &&
     typeof obj.notes === "string" &&
     typeof obj.creatorID === "string" &&
-    typeof obj.creationTime === "string"
+    typeof obj.creationTimestamp === "string"
   )
 }
