@@ -6,6 +6,7 @@ import { convertTimestamp } from "@/utils/convertTimestamp"
 
 import { deletePost } from "@/actions/deletePost"
 import { useState } from "react"
+import Link from "next/link"
 
 type Props = {
   postData: Post | undefined
@@ -24,7 +25,7 @@ export function PostPreview({ postData, userID }: Props) {
 
   if (isActive && postData) {
     return (
-      <div className="flex flex-col gap-3">
+      <Link className="flex flex-col gap-3" href={`/post/${postData.id}`}>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-[10px]">
             {convertTimestamp(postData.creationTimestamp)}
@@ -38,7 +39,7 @@ export function PostPreview({ postData, userID }: Props) {
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
         <p className="line-clamp-5 text-sm">{postData.description}</p>
-      </div>
+      </Link>
     )
   }
 
