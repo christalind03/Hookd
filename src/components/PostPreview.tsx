@@ -7,8 +7,8 @@ type Props = {
 export function PostPreview({ postData }: Props) {
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="font-bold text-xl">{postData.title}</h3>
-      <p className="line-clamp-5">{postData.description}</p>
+      <h3 className="font-bold text-lg">{postData.title}</h3>
+      <p className="line-clamp-5 text-sm">{postData.description}</p>
     </div>
   )
 }

@@ -8,10 +8,11 @@ type FormData = {
   notes: string
 }
 
-export async function submitPost(formData: FormData) {
+export async function submitPost(creatorID: string, formData: FormData) {
   const supabaseClient = await createClient()
 
   const { data, error } = await supabaseClient.from("post").insert({
+    creatorID,
     ...formData,
   })
 

@@ -18,6 +18,7 @@ import { submitPost } from "@/actions/submitPost"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useUser } from "@/components/UserProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
@@ -43,16 +44,24 @@ export function SubmitPost() {
   })
 
   const router = useRouter()
+  const user = useUser()
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
-    const serverResponse = await submitPost(formData)
-
-    if (isError(serverResponse)) {
-      setError(serverResponse)
-      return
+    if (user) {
+      const serverResponse = await submitPost(user.id, formData)
+  
+      if (isError(serverResponse)) {
+        setError(serverResponse)
+        return
+      }
+  
+      router.push("/home")
     }
 
-    router.push("/home")
+    setError({
+      status: "400",
+      message: "User not authenticated.",
+    })
   }
 
   return (
