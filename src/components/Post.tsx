@@ -31,6 +31,7 @@ export function Post({ postData, userID }: Props) {
             </p>
 
             <PostActions
+              id={postData.id}
               isAuthor={postData.creatorID === userID}
               onDelete={onDelete}
             />

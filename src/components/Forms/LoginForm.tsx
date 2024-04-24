@@ -8,75 +8,55 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
-import { Textarea } from "@/components/ui/Textarea"
 
 import { type Error, isError } from "@/types/Error"
-import { submitPost } from "@/actions/submitPost"
+import { logIn } from "@/actions/logIn"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useUser } from "@/components/UserProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { TextEditor } from "../TextEditor/TextEditor"
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title cannot be empty.",
+  email: z.string().email({
+    message: "Invalid email address.",
   }),
-  content: z
-    .string()
-    .refine(
-      (content) => content.trim() !== "" && content.trim() !== "<p></p>",
-      {
-        message: "Description cannot be empty.",
-      }
-    ),
+  password: z.string().min(1, {
+    message: "Password cannot be empty.",
+  }),
 })
 
-export function SubmitPost() {
+export function LoginForm() {
   const [error, setError] = useState<Error>()
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      title: "",
-      content: "",
+      email: "",
+      password: "",
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 
   const router = useRouter()
-  const user = useUser()
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
-    if (user) {
-      console.log(formData)
+    const serverResponse = await logIn(formData)
 
-      const serverResponse = await submitPost(user.id, formData)
-
-      if (isError(serverResponse)) {
-        setError(serverResponse)
-        return
-      }
-
-      router.push("/home")
+    if (isError(serverResponse)) {
+      setError(serverResponse)
       return
     }
 
-    setError({
-      status: "400",
-      message: "User not authenticated.",
-    })
+    router.push("/home")
   }
 
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+        className="flex flex-col gap-3 w-96"
         onSubmit={formHook.handleSubmit(onSubmit)}
       >
         {error && (
@@ -90,13 +70,11 @@ export function SubmitPost() {
 
         <FormField
           control={formHook.control}
-          name="title"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
-
               <FormControl>
-                <Input placeholder="Title" {...field} />
+                <Input placeholder="Email Address" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -106,13 +84,11 @@ export function SubmitPost() {
 
         <FormField
           control={formHook.control}
-          name="content"
+          name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Content</FormLabel>
-
               <FormControl>
-                <TextEditor content={field.value} onChange={field.onChange} />
+                <Input placeholder="Password" type="password" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -120,7 +96,7 @@ export function SubmitPost() {
           )}
         />
 
-        <Button type="submit">Submit Post</Button>
+        <Button type="submit">Log In</Button>
       </form>
     </Form>
   )

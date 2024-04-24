@@ -7,13 +7,17 @@ type FormData = {
   content: string
 }
 
-export async function submitPost(creatorID: string, formData: FormData) {
+export async function editPost(postID: string, formData: FormData) {
   const supabaseClient = await createClient()
 
-  const { data, error } = await supabaseClient.from("post").insert({
-    creatorID,
-    ...formData,
-  })
+  const { data, error } = await supabaseClient
+    .from("post")
+    .update({
+      ...formData,
+    })
+    .match({
+      id: postID,
+    })
 
   if (error) {
     return {
@@ -21,6 +25,4 @@ export async function submitPost(creatorID: string, formData: FormData) {
       message: error.message,
     }
   }
-
-  return
 }

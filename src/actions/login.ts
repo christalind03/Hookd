@@ -20,6 +20,4 @@ export async function logIn(formData: FormData) {
       message: error.message,
     }
   }
-
-  return null
 }

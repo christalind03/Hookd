@@ -1,3 +1,5 @@
+"use client"
+
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import {
   DropdownMenu,
@@ -9,13 +11,17 @@ import {
 import { IconLabel } from "@/components/IconLabel"
 import { Fragment } from "react"
 import { Link2Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
+import { redirect, useRouter } from "next/navigation"
 
 type Props = {
+  id: string
   isAuthor: boolean
   onDelete: () => void
 }
 
-export function PostActions({ isAuthor, onDelete }: Props) {
+export function PostActions({ id, isAuthor, onDelete }: Props) {
+  const router = useRouter()
+
   return (
     <DropdownMenu>
       <DropdownMenuContent align="end" className="w-36" forceMount>
@@ -27,11 +33,21 @@ export function PostActions({ isAuthor, onDelete }: Props) {
           <Fragment>
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(event) => {
+                event.stopPropagation()
+                router.push(`/post/edit/${id}`)
+              }}
+            >
               <IconLabel text="Edit Post" icon={<Pencil1Icon />} />
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => onDelete()}>
+            <DropdownMenuItem
+              onClick={(event) => {
+                event.stopPropagation()
+                onDelete()
+              }}
+            >
               <IconLabel
                 text="Delete Post"
                 icon={<TrashIcon />}

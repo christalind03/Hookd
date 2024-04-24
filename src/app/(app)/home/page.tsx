@@ -1,30 +1,50 @@
-import { createClient } from "@/utils/supabase/server"
+"use client"
+
+import { supabaseClient } from "@/utils/supabase/client"
 import { PostPreview } from "@/components/PostPreview"
 import { Separator } from "@/components/ui/Separator"
+import { useEffect, useState } from "react"
+import { type Post } from "@/types/Post"
+import { useUser } from "@/components/UserProvider"
 
-export default async function Home() {
-  const supabaseClient = await createClient()
+export default function Home() {
+  const user = useUser()
+  const [posts, setPosts] = useState<Post[]>()
 
-  const {
-    data: { user },
-  } = await supabaseClient.auth.getUser()
+  useEffect(() => {
+    async function fetchPosts() {
+      const { data, error } = await supabaseClient
+        .from("post")
+        .select("*")
+        .order("creationTimestamp", { ascending: false })
 
-  const { data, error } = await supabaseClient
-    .from("post")
-    .select("*")
-    .order("creationTimestamp", { ascending: false })
+      if (data) {
+        setPosts(data)
+      }
+    }
+
+    fetchPosts()
+  })
 
   return (
     <div className="flex flex-col gap-5 items-center justify-center m-10">
-      {data?.map((postData, postIndex) => (
-        <div
-          className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
-          key={postData.id}
-        >
-          {!!postIndex && <Separator />}
-          <PostPreview postData={postData} userID={user?.id || ""} />
-        </div>
-      ))}
+      {posts ? (
+        posts.length > 0 ? (
+          posts.map((postData, postIndex) => (
+            <div
+              className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+              key={postData.id}
+            >
+              {!!postIndex && <Separator />}
+              <PostPreview postData={postData} userID={user?.id || ""} />
+            </div>
+          ))
+        ) : (
+          <p>Nothing to display...</p>
+        )
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   )
 }
