@@ -37,7 +37,7 @@ export function Post({ postData, userID }: Props) {
           </div>
 
           <h3 className="font-extrabold text-3xl">{postData.title}</h3>
-          <p>{postData.description}</p>
+          <div dangerouslySetInnerHTML={{ __html: postData.content }} />
         </div>
       </div>
     )

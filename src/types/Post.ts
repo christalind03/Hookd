@@ -1,8 +1,7 @@
 export type Post = {
   id: string
   title: string
-  description: string
-  notes: string
+  content: string
   creatorID: string
   creationTimestamp: string
 }
@@ -13,8 +12,7 @@ export function isPost(obj: any): obj is Post {
     typeof obj === "object" &&
     typeof obj.id === "string" &&
     typeof obj.title === "string" &&
-    typeof obj.description === "string" &&
-    typeof obj.notes === "string" &&
+    typeof obj.content === "string" &&
     typeof obj.creatorID === "string" &&
     typeof obj.creationTimestamp === "string"
   )

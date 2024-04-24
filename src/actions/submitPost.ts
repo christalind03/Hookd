@@ -4,8 +4,7 @@ import { createClient } from "@/utils/supabase/server"
 
 type FormData = {
   title: string
-  description: string
-  notes: string
+  content: string
 }
 
 export async function submitPost(creatorID: string, formData: FormData) {

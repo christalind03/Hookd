@@ -8,6 +8,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
@@ -21,15 +22,20 @@ import { useState } from "react"
 import { useUser } from "@/components/UserProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { TextEditor } from "../TextEditor/TextEditor"
 
 const formSchema = z.object({
   title: z.string().min(1, {
     message: "Title cannot be empty.",
   }),
-  description: z.string().min(1, {
-    message: "Description cannot be empty.",
-  }),
-  notes: z.string(),
+  content: z
+    .string()
+    .refine(
+      (content) => content.trim() !== "" && content.trim() !== "<p></p>",
+      {
+        message: "Description cannot be empty.",
+      }
+    ),
 })
 
 export function SubmitPost() {
@@ -37,9 +43,9 @@ export function SubmitPost() {
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       title: "",
-      description: "",
-      notes: "",
+      content: "",
     },
+    mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 
@@ -48,14 +54,17 @@ export function SubmitPost() {
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
     if (user) {
+      console.log(formData)
+
       const serverResponse = await submitPost(user.id, formData)
-  
+
       if (isError(serverResponse)) {
         setError(serverResponse)
         return
       }
-  
+
       router.push("/home")
+      return
     }
 
     setError({
@@ -67,7 +76,7 @@ export function SubmitPost() {
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col gap-3 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+        className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
         onSubmit={formHook.handleSubmit(onSubmit)}
       >
         {error && (
@@ -84,6 +93,8 @@ export function SubmitPost() {
           name="title"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Title</FormLabel>
+
               <FormControl>
                 <Input placeholder="Title" {...field} />
               </FormControl>
@@ -95,28 +106,16 @@ export function SubmitPost() {
 
         <FormField
           control={formHook.control}
-          name="description"
+          name="content"
           render={({ field }) => (
             <FormItem>
-              <FormControl>
-                <Textarea
-                  className="h-40"
-                  placeholder="Description"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+              <FormLabel>Content</FormLabel>
 
-        <FormField
-          control={formHook.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
               <FormControl>
-                <Textarea className="h-32" placeholder="Notes" {...field} />
+                <TextEditor content={field.value} onChange={field.onChange} />
               </FormControl>
+
+              <FormMessage />
             </FormItem>
           )}
         />

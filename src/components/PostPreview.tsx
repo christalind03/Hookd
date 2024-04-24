@@ -38,7 +38,7 @@ export function PostPreview({ postData, userID }: Props) {
         </div>
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
-        <p className="line-clamp-5 text-sm">{postData.description}</p>
+        <div dangerouslySetInnerHTML={{ __html: postData.content }} />
       </Link>
     )
   }
