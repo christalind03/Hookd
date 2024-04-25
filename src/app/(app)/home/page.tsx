@@ -24,7 +24,7 @@ export default function Home() {
     }
 
     fetchPosts()
-  })
+  }, [])
 
   return (
     <div className="flex flex-col gap-5 items-center justify-center m-10">

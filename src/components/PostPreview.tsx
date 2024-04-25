@@ -5,17 +5,29 @@ import { PostActions } from "@/components/PostActions"
 import { convertTimestamp } from "@/utils/convertTimestamp"
 
 import { deletePost } from "@/actions/deletePost"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
+import { supabaseClient } from "@/utils/supabase/client"
 
 type Props = {
-  postData: Post | undefined
-  userID: string | undefined
+  postData: Post
+  userID?: string
 }
 
 export function PostPreview({ postData, userID }: Props) {
+  const [imageURL, setImageURL] = useState("")
   const [isActive, setIsActive] = useState(true)
 
+  useEffect(() => {
+    if (postData.hasImage) {
+      const { data } = supabaseClient.storage
+        .from("posts")
+        .getPublicUrl(postData.id)
+
+      setImageURL(data.publicUrl)
+    }
+  }, [])
+  
   async function onDelete() {
     if (postData) {
       await deletePost(postData.id)
@@ -23,7 +35,7 @@ export function PostPreview({ postData, userID }: Props) {
     }
   }
 
-  if (isActive && postData) {
+  if (isActive) {
     return (
       <Link className="flex flex-col gap-3" href={`/post/${postData.id}`}>
         <div className="flex items-center justify-between">
@@ -39,6 +51,7 @@ export function PostPreview({ postData, userID }: Props) {
         </div>
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
+        {imageURL && <img src={imageURL} />}
         <div dangerouslySetInnerHTML={{ __html: postData.content }} />
       </Link>
     )

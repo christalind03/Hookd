@@ -1,18 +1,36 @@
 "use server"
 
 import { createClient } from "@/utils/supabase/server"
-
-type FormData = {
-  title: string
-  content: string
-}
+import { randomUUID } from "crypto"
 
 export async function submitPost(creatorID: string, formData: FormData) {
+  const id = randomUUID()
+  const title = formData.get("title")
+  const content = formData.get("content")
+  const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
+  if (productImage instanceof File) {
+    const { data, error } = await supabaseClient.storage
+      .from("posts")
+      .upload(id, productImage, {
+        contentType: productImage.type,
+      })
+
+    if (error) {
+      return {
+        status: error.name,
+        message: error.message,
+      }
+    }
+  }
+
   const { data, error } = await supabaseClient.from("post").insert({
+    id,
+    title,
+    content,
+    hasImage: productImage instanceof File,
     creatorID,
-    ...formData,
   })
 
   if (error) {
@@ -21,6 +39,4 @@ export async function submitPost(creatorID: string, formData: FormData) {
       message: error.message,
     }
   }
-
-  return
 }

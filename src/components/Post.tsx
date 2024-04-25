@@ -4,15 +4,27 @@ import { PostActions } from "@/components/PostActions"
 import { type Post } from "@/types/Post"
 import { convertTimestamp } from "@/utils/convertTimestamp"
 import { deletePost } from "@/actions/deletePost"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { supabaseClient } from "@/utils/supabase/client"
 
 type Props = {
-  postData: Post | undefined
-  userID: string | undefined
+  postData: Post
+  userID?: string
 }
 
 export function Post({ postData, userID }: Props) {
+  const [imageURL, setImageURL] = useState("")
   const [isActive, setIsActive] = useState(true)
+
+  useEffect(() => {
+    if (postData.hasImage) {
+      const { data } = supabaseClient.storage
+        .from("posts")
+        .getPublicUrl(postData.id)
+
+      setImageURL(data.publicUrl)
+    }
+  }, [])
 
   async function onDelete() {
     if (postData) {
@@ -21,7 +33,7 @@ export function Post({ postData, userID }: Props) {
     }
   }
 
-  if (isActive && postData) {
+  if (isActive) {
     return (
       <div className="flex items-center justify-center m-10">
         <div className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]">
@@ -38,6 +50,7 @@ export function Post({ postData, userID }: Props) {
           </div>
 
           <h3 className="font-extrabold text-3xl">{postData.title}</h3>
+          {imageURL && <img src={imageURL} />}
           <div dangerouslySetInnerHTML={{ __html: postData.content }} />
         </div>
       </div>

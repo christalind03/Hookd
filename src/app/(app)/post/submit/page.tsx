@@ -13,7 +13,7 @@ export default function SubmitPost() {
     return (
       <div className="flex flex-col gap-5 items-center justify-center m-10">
         <h3 className="font-extrabold text-3xl">Submit Post</h3>
-        <PostForm onSubmit={(formData) => submitPost(user.id, formData)} />
+        <PostForm onSubmit={(formData) => submitPost(user?.id, formData)} />
       </div>
     )
   }
