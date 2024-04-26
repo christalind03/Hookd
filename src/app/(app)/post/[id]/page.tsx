@@ -15,7 +15,7 @@ export default async function PostID({ params: { id } }: Props) {
   } = await supabaseClient.auth.getUser()
 
   const { data, error } = await supabaseClient
-    .from("post")
+    .from("posts")
     .select("*")
     .match({
       id,

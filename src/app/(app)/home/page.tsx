@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchPosts() {
       const { data, error } = await supabaseClient
-        .from("post")
+        .from("posts")
         .select("*")
         .order("creationTimestamp", { ascending: false })
 

@@ -22,7 +22,7 @@ export default function EditPost({ params: { id } }: Props) {
   useEffect(() => {
     async function fetchPostData() {
       const { data, error } = await supabaseClient
-        .from("post")
+        .from("posts")
         .select("*")
         .match({
           id,

@@ -61,19 +61,15 @@ export function PostForm({ postData, onSubmit }: Props) {
 
   useEffect(() => {
     async function fetchImage() {
-      // if (postData) {
+      if (postData?.hasImage) {
         const { data, error } = await supabaseClient.storage
           .from("posts")
-          .download(postData?.id || "")
-
-        console.log("File Data: ", data)
-        console.log("File Error: ", error)
-        // console.log("File Error: ", error)
+          .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {
           formHook.setValue("productImage", data)
         }
-      // }
+      }
     }
 
     fetchImage()

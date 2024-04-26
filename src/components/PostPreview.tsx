@@ -22,12 +22,12 @@ export function PostPreview({ postData, userID }: Props) {
     if (postData.hasImage) {
       const { data } = supabaseClient.storage
         .from("posts")
-        .getPublicUrl(postData.id)
+        .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
 
       setImageURL(data.publicUrl)
     }
   }, [])
-  
+
   async function onDelete() {
     if (postData) {
       await deletePost(postData.id)
@@ -51,7 +51,7 @@ export function PostPreview({ postData, userID }: Props) {
         </div>
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
-        {imageURL && <img src={imageURL} />}
+        {imageURL && <img className="rounded-md" src={imageURL} />}
         <div dangerouslySetInnerHTML={{ __html: postData.content }} />
       </Link>
     )

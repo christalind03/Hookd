@@ -11,15 +11,38 @@ export async function editPost(id: string, formData: FormData) {
   if (productImage instanceof File) {
     const { data, error } = await supabaseClient.storage
       .from("posts")
-      .update(id, productImage, {
-        contentType: productImage.type,
-        upsert: true,
+      .list(undefined, {
+        search: id,
       })
 
-    if (error) {
-      return {
-        status: error.name,
-        message: error.message,
+    // If a file already exists, replace the current file.
+    // Otherwise, create a new file instance.
+    if (data && data[0]) {
+      const { data, error } = await supabaseClient.storage
+        .from("posts")
+        .update(id, productImage, {
+          contentType: productImage.type,
+          upsert: true,
+        })
+
+      if (error) {
+        return {
+          status: "413",
+          message: "File exceeds maximum size (1MB).",
+        }
+      }
+    } else {
+      const { data, error } = await supabaseClient.storage
+        .from("posts")
+        .upload(id, productImage, {
+          contentType: productImage.type,
+        })
+
+      if (error) {
+        return {
+          status: "413",
+          message: "File exceeds maximum size (1MB).",
+        }
       }
     }
   } else {
@@ -29,7 +52,7 @@ export async function editPost(id: string, formData: FormData) {
   }
 
   const { data, error } = await supabaseClient
-    .from("post")
+    .from("posts")
     .update({
       title,
       content,

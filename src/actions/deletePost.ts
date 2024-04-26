@@ -6,7 +6,7 @@ export async function deletePost(id: string) {
   const supabaseClient = await createClient()
 
   await supabaseClient
-    .from("post")
+    .from("posts")
     .delete()
     .match({
       id,

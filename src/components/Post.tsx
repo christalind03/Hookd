@@ -50,7 +50,7 @@ export function Post({ postData, userID }: Props) {
           </div>
 
           <h3 className="font-extrabold text-3xl">{postData.title}</h3>
-          {imageURL && <img src={imageURL} />}
+          {imageURL && <img className="rounded-md" src={imageURL} />}
           <div dangerouslySetInnerHTML={{ __html: postData.content }} />
         </div>
       </div>

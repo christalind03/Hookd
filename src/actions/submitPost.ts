@@ -19,13 +19,13 @@ export async function submitPost(creatorID: string, formData: FormData) {
 
     if (error) {
       return {
-        status: error.name,
-        message: error.message,
+        status: "413",
+        message: "File exceeds maximum size (1MB).",
       }
     }
   }
 
-  const { data, error } = await supabaseClient.from("post").insert({
+  const { data, error } = await supabaseClient.from("posts").insert({
     id,
     title,
     content,
