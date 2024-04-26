@@ -21,7 +21,7 @@ export function TextEditor({ content, onChange }: Props) {
     editorProps: {
       attributes: {
         class:
-          "bg-background border border-input min-h-60 p-3 rounded-md text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+          "bg-background border border-input min-h-60 p-3 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
       },
     },
     extensions: [
@@ -44,6 +44,11 @@ export function TextEditor({ content, onChange }: Props) {
             class: "font-bold text-lg",
             levels: [3],
           },
+        },
+        paragraph: {
+          HTMLAttributes: {
+            class: "text-sm",
+          }
         },
         listItem: {
           HTMLAttributes: {
