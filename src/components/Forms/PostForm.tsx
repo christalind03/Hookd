@@ -107,7 +107,7 @@ export function PostForm({ postData, onSubmit }: Props) {
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+        className="flex flex-col gap-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
         onSubmit={formHook.handleSubmit(handleSubmit)}
       >
         {error && (

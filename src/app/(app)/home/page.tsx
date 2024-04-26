@@ -27,12 +27,12 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-5 items-center justify-center m-10">
+    <div className="flex flex-col gap-5 items-center justify-center m-5">
       {posts ? (
         posts.length > 0 ? (
           posts.map((postData, postIndex) => (
             <div
-              className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+              className="flex flex-col gap-5 sm:w-[525px] md:w-[625px] lg:w-[750px]"
               key={postData.id}
             >
               {!!postIndex && <Separator />}

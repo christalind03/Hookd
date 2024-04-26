@@ -35,7 +35,7 @@ export function Post({ postData, userID }: Props) {
 
   if (isActive) {
     return (
-      <div className="flex items-center justify-center m-10">
+      <div className="flex items-center justify-center m-5">
         <div className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]">
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground text-[10px]">

@@ -27,7 +27,7 @@ export function NavBar() {
   return (
     <div className="backdrop-blur-lg flex h-14 items-center justify-between left-0 px-5 sticky top-0 z-10">
       <Sheet open={menuState} onOpenChange={(isOpen) => setMenuState(isOpen)}>
-        <SheetContent className="max-sm:w-screen" side="left">
+        <SheetContent className="w-screen sm:w-full" side="left">
           <div className="flex flex-col gap-5 h-full items-center justify-center">
             {navLinks.map((navLink) => (
               <Link
