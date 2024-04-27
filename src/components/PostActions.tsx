@@ -36,7 +36,7 @@ export function PostActions({ id, isAuthor, onDelete }: Props) {
             <DropdownMenuItem
               onClick={(event) => {
                 event.stopPropagation()
-                router.push(`/post/edit/${id}`)
+                router.push(`/post/submit?edit=${id}`)
               }}
             >
               <IconLabel text="Edit Post" icon={<Pencil1Icon />} />

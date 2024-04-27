@@ -53,6 +53,8 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
   const [error, setError] = useState<Error>()
   const [postID, setPostID] = useState<string>(postData?.id || v4())
 
+  console.log(postData)
+
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       title: postData?.title || "",
