@@ -15,9 +15,9 @@ type Props = {
 }
 
 export default function EditPost({ params: { id } }: Props) {
-  const [postData, setPostData] = useState<Post>()
-  const router = useRouter()
   const user = useUser()
+  const router = useRouter()
+  const [postData, setPostData] = useState<Post>()
 
   useEffect(() => {
     async function fetchPostData() {
@@ -32,11 +32,10 @@ export default function EditPost({ params: { id } }: Props) {
       if (data) {
         if (data.creatorID === user?.id) {
           setPostData(data)
-          return
         }
+      } else {
+        router.replace("/home")
       }
-
-      router.replace("/home")
     }
 
     fetchPostData()
@@ -48,7 +47,7 @@ export default function EditPost({ params: { id } }: Props) {
         <h3 className="font-extrabold text-3xl">Edit Post</h3>
         <PostForm
           postData={postData}
-          onSubmit={(formData) => editPost(postData.id, formData)}
+          onSubmit={(formData) => editPost(formData)}
         />
       </div>
     )

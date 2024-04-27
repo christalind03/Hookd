@@ -1,36 +1,34 @@
 "use server"
 
 import { createClient } from "@/utils/supabase/server"
-import { randomUUID } from "crypto"
+import { uploadFile } from "@/utils/uploadFile"
+import { isError } from "@/types/Error"
 
-export async function submitPost(creatorID: string, formData: FormData) {
-  const id = randomUUID()
+export async function submitPost(formData: FormData) {
+  const id = formData.get("id") as string
   const title = formData.get("title")
   const content = formData.get("content")
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
-  if (productImage instanceof File) {
-    const { data, error } = await supabaseClient.storage
-      .from("posts")
-      .upload(id, productImage, {
-        contentType: productImage.type,
-      })
+  // Update storage.posts bucket.
+  const serverResponse = uploadFile("posts", id, productImage)
 
-    if (error) {
-      return {
-        status: "413",
-        message: "File exceeds maximum size (1MB).",
-      }
-    }
+  if (isError(serverResponse)) {
+    return serverResponse
   }
+
+  // Update public.posts table.
+  const {
+    data: { user }
+  } = await supabaseClient.auth.getUser()
 
   const { data, error } = await supabaseClient.from("posts").insert({
     id,
     title,
     content,
     hasImage: productImage instanceof File,
-    creatorID,
+    creatorID: user?.id,
   })
 
   if (error) {

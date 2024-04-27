@@ -6,14 +6,14 @@ import { useRouter } from "next/navigation"
 import { useUser } from "@/components/UserProvider"
 
 export default function SubmitPost() {
-  const router = useRouter()
   const user = useUser()
+  const router = useRouter()
 
   if (user) {
     return (
       <div className="flex flex-col gap-5 items-center justify-center m-5">
         <h3 className="font-extrabold text-3xl">Submit Post</h3>
-        <PostForm onSubmit={(formData) => submitPost(user?.id, formData)} />
+        <PostForm onSubmit={(formData) => submitPost(formData)} />
       </div>
     )
   }

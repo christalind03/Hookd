@@ -17,13 +17,13 @@ import { type Error, isError } from "@/types/Error"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { useUser } from "@/components/UserProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { TextEditor } from "@/components/TextEditor/TextEditor"
 import { supabaseClient } from "@/utils/supabase/client"
 import { type Post } from "@/types/Post"
 import { UploadIcon } from "@radix-ui/react-icons"
+import { v4 } from "uuid"
 
 type Props = {
   postData?: Post
@@ -46,22 +46,22 @@ const formSchema = z.object({
 })
 
 export function PostForm({ postData, onSubmit }: Props) {
+  const router = useRouter()
   const [error, setError] = useState<Error>()
+  const [postID, setPostID] = useState<string>(postData?.id || v4())
+
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      title: postData ? postData.title : "",
-      content: postData ? postData.content : "",
+      title: postData?.title || "",
+      content: postData?.content || "",
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 
-  const router = useRouter()
-  const user = useUser()
-
   useEffect(() => {
     async function fetchImage() {
-      if (postData?.hasImage) {
+      if (postData && postData.hasImage) {
         const { data, error } = await supabaseClient.storage
           .from("posts")
           .download(`${postData.id}?burst=${Date.now()}`)
@@ -76,28 +76,22 @@ export function PostForm({ postData, onSubmit }: Props) {
   }, [])
 
   async function handleSubmit(zodData: z.infer<typeof formSchema>) {
-    if (user) {
-      const formData = new FormData()
+    const formData = new FormData()
 
-      for (const [key, value] of Object.entries(zodData)) {
-        formData.append(key, value)
-      }
+    formData.append("id", postID)
+    formData.append("title", zodData.title)
+    formData.append("content", zodData.content)
+    formData.append("productImage", zodData.productImage || "")
 
-      const serverResponse = await onSubmit(formData)
+    const serverResponse = await onSubmit(formData)
 
-      if (isError(serverResponse)) {
-        setError(serverResponse)
-        return
-      }
-
-      router.push("/home")
+    if (isError(serverResponse)) {
+      setError(serverResponse)
       return
     }
 
-    setError({
-      status: "400",
-      message: "User not authenticated.",
-    })
+    router.push("/home")
+    return
   }
 
   function uploadImage() {
