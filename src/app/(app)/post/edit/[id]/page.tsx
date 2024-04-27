@@ -46,6 +46,7 @@ export default function EditPost({ params: { id } }: Props) {
       <div className="flex flex-col gap-5 items-center justify-center m-5">
         <h3 className="font-extrabold text-3xl">Edit Post</h3>
         <PostForm
+          isDraft={false}
           postData={postData}
           onSubmit={(formData) => editPost(formData)}
         />

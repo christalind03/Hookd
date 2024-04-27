@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/Input"
 import { type Error, isError } from "@/types/Error"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { TextEditor } from "@/components/TextEditor/TextEditor"
@@ -24,8 +24,11 @@ import { supabaseClient } from "@/utils/supabase/client"
 import { type Post } from "@/types/Post"
 import { UploadIcon } from "@radix-ui/react-icons"
 import { v4 } from "uuid"
+import debounce from "lodash.debounce"
+import { saveDraft } from "@/actions/saveDraft"
 
 type Props = {
+  isDraft?: boolean
   postData?: Post
   onSubmit: (formData: FormData) => Promise<Error | void>
 }
@@ -45,7 +48,7 @@ const formSchema = z.object({
   productImage: z.instanceof(Blob).optional(),
 })
 
-export function PostForm({ postData, onSubmit }: Props) {
+export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
   const router = useRouter()
   const [error, setError] = useState<Error>()
   const [postID, setPostID] = useState<string>(postData?.id || v4())
@@ -58,6 +61,23 @@ export function PostForm({ postData, onSubmit }: Props) {
     mode: "onChange",
     resolver: zodResolver(formSchema),
   })
+
+  const debounceDraft = useCallback(
+    debounce(() => {
+      const formData = new FormData()
+      const zodData = formHook.getValues()
+
+      if (zodData.title || zodData.content || zodData.productImage) {
+        formData.append("id", postID)
+        formData.append("title", zodData.title)
+        formData.append("content", zodData.content)
+        formData.append("productImage", zodData.productImage || "")
+
+        saveDraft(formData)
+      }
+    }, 1500),
+    []
+  )
 
   useEffect(() => {
     async function fetchImage() {
@@ -74,6 +94,14 @@ export function PostForm({ postData, onSubmit }: Props) {
 
     fetchImage()
   }, [])
+
+  useEffect(() => {
+    if (isDraft) {
+      debounceDraft()
+
+      return () => debounceDraft.cancel()
+    }
+  }, [formHook.getValues()])
 
   async function handleSubmit(zodData: z.infer<typeof formSchema>) {
     const formData = new FormData()

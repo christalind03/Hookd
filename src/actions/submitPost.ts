@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server"
 import { uploadFile } from "@/utils/uploadFile"
 import { isError } from "@/types/Error"
+import { deleteDraft } from "@/actions/deleteDraft"
 
 export async function submitPost(formData: FormData) {
   const id = formData.get("id") as string
@@ -10,6 +11,9 @@ export async function submitPost(formData: FormData) {
   const content = formData.get("content")
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
+
+  // Delete draft entry.
+  deleteDraft(id)
 
   // Update storage.posts bucket.
   const serverResponse = uploadFile("posts", id, productImage)
