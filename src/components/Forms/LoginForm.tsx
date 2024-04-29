@@ -56,7 +56,7 @@ export function LoginForm() {
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col gap-3 max-w-96 w-full"
+        className="space-y-3 max-w-96 w-full"
         onSubmit={formHook.handleSubmit(onSubmit)}
       >
         {error && (

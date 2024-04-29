@@ -26,7 +26,7 @@ const defaultColors = [
 export function ColorPicker({ value, onChange }: Props) {
   return (
     <Popover>
-      <PopoverContent align="end" className="flex flex-col gap-3 p-3 w-60">
+      <PopoverContent align="end" className="p-3 space-y-3 w-60">
         <div className="flex items-center justify-between">
           {defaultColors.map((currentColor) => (
             <div

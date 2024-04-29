@@ -69,7 +69,7 @@ export function TextEditor({ content, onChange }: Props) {
   })
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="space-y-3">
       <Toolbar editor={textEditor} />
       <EditorContent editor={textEditor} />
     </div>

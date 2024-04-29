@@ -8,6 +8,7 @@ import { deletePost } from "@/actions/deletePost"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { supabaseClient } from "@/utils/supabase/client"
+import { Badge } from "@/components/ui/Badge"
 
 type Props = {
   postData: Post
@@ -35,7 +36,7 @@ export function PostPreview({ postData, userID }: Props) {
 
   if (isActive) {
     return (
-      <Link className="flex flex-col gap-3" href={`/post/${postData.id}`}>
+      <Link className="p-3 rounded-md space-y-3 hover:bg-accent" href={`/post/${postData.id}`}>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-[10px]">
             {convertTimestamp(postData.creationTimestamp)}
@@ -49,14 +50,27 @@ export function PostPreview({ postData, userID }: Props) {
         </div>
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
+        
+        <Badge
+          className={"grow-0" &&
+            postData.difficulty === "Beginner"
+              ? "hover:bg-green-300 bg-green-300 text-green-700"
+              : postData.difficulty === "Intermediate"
+              ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
+              : "hover:bg-red-300 bg-red-300 text-red-700"
+          }
+        >
+          {postData.difficulty}
+        </Badge>
+
         {imageURL && <img className="rounded-md" src={imageURL} />}
-        <div dangerouslySetInnerHTML={{ __html: postData.content }} />
+        
       </Link>
     )
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-[10px]">Date Unavailable</p>
       </div>

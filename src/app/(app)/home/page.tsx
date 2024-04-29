@@ -32,7 +32,7 @@ export default function Home() {
         posts.length > 0 ? (
           posts.map((postData, postIndex) => (
             <div
-              className="flex flex-col gap-5 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+              className="space-y-5 sm:w-[525px] md:w-[625px] lg:w-[750px]"
               key={postData.id}
             >
               {!!postIndex && <Separator />}

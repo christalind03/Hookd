@@ -54,7 +54,7 @@ export function InsertLink({ onSubmit }: Props) {
       <PopoverContent>
         <Form {...formHook}>
           <form
-            className="flex flex-col gap-3"
+            className="space-y-3"
             onSubmit={(event) => {
               event.stopPropagation()
               formHook.handleSubmit(handleSubmit)(event)

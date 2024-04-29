@@ -8,6 +8,7 @@ export async function editPost(formData: FormData) {
   const id = formData.get("id") as string
   const title = formData.get("title")
   const content = formData.get("content")
+  const difficulty = formData.get("difficulty")
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
@@ -24,7 +25,7 @@ export async function editPost(formData: FormData) {
     .update({
       title,
       content,
-      hasImage: productImage instanceof File,
+      difficulty,
     })
     .match({
       id,

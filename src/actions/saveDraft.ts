@@ -8,6 +8,7 @@ export async function saveDraft(formData: FormData) {
   const id = formData.get("id") as string
   const title = formData.get("title")
   const content = formData.get("content")
+  const difficulty = formData.get("difficulty")
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
@@ -31,6 +32,7 @@ export async function saveDraft(formData: FormData) {
       .update({
         title,
         content,
+        difficulty,
         hasImage: productImage instanceof File,
         lastEdit: new Date().toISOString(),
       })
@@ -44,9 +46,13 @@ export async function saveDraft(formData: FormData) {
       id,
       title,
       content,
+      difficulty,
       hasImage: productImage instanceof File,
       creatorID: user?.id,
       lastEdit: new Date().toISOString(),
     })
+
+    console.log("Autosave Data: ", data)
+    console.log("Autosave Error: ", error)
   }
 }

@@ -27,6 +27,14 @@ import { v4 } from "uuid"
 import debounce from "lodash.debounce"
 import { saveDraft } from "@/actions/saveDraft"
 import { type Draft } from "@/types/Draft"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select"
+import { Niconne } from "next/font/google"
 
 type Props = {
   isDraft?: boolean
@@ -47,6 +55,9 @@ const formSchema = z.object({
         message: "Description cannot be empty.",
       }
     ),
+  difficulty: z.string().refine((content) => content.trim() !== "N/A", {
+    message: "Difficulty cannot be empty",
+  }),
   productImage: z.instanceof(Blob, {
     message: "Image cannot be empty.",
   }),
@@ -61,6 +72,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
     defaultValues: {
       title: postData?.title || "",
       content: postData?.content || "",
+      difficulty: postData?.difficulty || "N/A",
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -68,18 +80,21 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
 
   const debounceDraft = useCallback(
     debounce(() => {
+      console.log("Autosaving...")
+
       const formData = new FormData()
       const zodData = formHook.getValues()
 
       if (
         zodData.title ||
-        (zodData.content !== "" &&
-          zodData.content !== '<p class="text-sm"></p>') ||
+        (zodData.content.trim() !== "" && zodData.content.trim() !== '<p class="text-sm"></p>') ||
+        zodData.difficulty ||
         zodData.productImage
       ) {
         formData.append("id", postID)
         formData.append("title", zodData.title)
         formData.append("content", zodData.content)
+        formData.append("difficulty", zodData.difficulty)
         formData.append("productImage", zodData.productImage || "")
 
         saveDraft(formData)
@@ -118,6 +133,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
     formData.append("id", postID)
     formData.append("title", zodData.title)
     formData.append("content", zodData.content)
+    formData.append("difficulty", zodData.difficulty)
     formData.append("productImage", zodData.productImage || "")
 
     const serverResponse = await onSubmit(formData)
@@ -138,7 +154,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col gap-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
+        className="space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
         onSubmit={formHook.handleSubmit(handleSubmit)}
       >
         {error && (
@@ -176,6 +192,31 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
               <FormControl>
                 <TextEditor content={field.value} onChange={field.onChange} />
               </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={formHook.control}
+          name="difficulty"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Difficulty</FormLabel>
+              <FormMessage />
+
+              <Select defaultValue={field.value} onValueChange={field.onChange}>
+                <SelectContent>
+                  <SelectItem value="Beginner">Beginner</SelectItem>
+                  <SelectItem value="Intermediate">Intermediate</SelectItem>
+                  <SelectItem value="Advanced">Advanced</SelectItem>
+                </SelectContent>
+
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Difficulty" />
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
             </FormItem>
           )}
         />

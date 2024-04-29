@@ -9,6 +9,7 @@ export async function submitPost(formData: FormData) {
   const id = formData.get("id") as string
   const title = formData.get("title")
   const content = formData.get("content")
+  const difficulty = formData.get("difficulty")
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
@@ -31,6 +32,7 @@ export async function submitPost(formData: FormData) {
     id,
     title,
     content,
+    difficulty,
     creatorID: user?.id,
   })
 

@@ -6,6 +6,7 @@ import { convertTimestamp } from "@/utils/convertTimestamp"
 import { deletePost } from "@/actions/deletePost"
 import { useEffect, useState } from "react"
 import { supabaseClient } from "@/utils/supabase/client"
+import { Badge } from "@/components/ui/Badge"
 
 type Props = {
   postData: Post
@@ -34,7 +35,7 @@ export function Post({ postData, userID }: Props) {
   if (isActive) {
     return (
       <div className="flex items-center justify-center m-5">
-        <div className="flex flex-col gap-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]">
+        <div className="space-y-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]">
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground text-[10px]">
               {convertTimestamp(postData.creationTimestamp)}
@@ -48,6 +49,19 @@ export function Post({ postData, userID }: Props) {
           </div>
 
           <h3 className="font-extrabold text-3xl">{postData.title}</h3>
+
+          <Badge
+            className={
+              postData.difficulty === "Beginner"
+                ? "hover:bg-green-300 bg-green-300 text-green-700"
+                : postData.difficulty === "Intermediate"
+                ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
+                : "hover:bg-red-300 bg-red-300 text-red-700"
+            }
+          >
+            {postData.difficulty}
+          </Badge>
+
           {imageURL && <img className="rounded-md" src={imageURL} />}
           <div dangerouslySetInnerHTML={{ __html: postData.content }} />
         </div>
