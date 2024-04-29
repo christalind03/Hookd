@@ -46,13 +46,10 @@ export async function saveDraft(formData: FormData) {
       id,
       title,
       content,
-      difficulty,
+      difficulty: difficulty || "N/A",
       hasImage: productImage instanceof File,
       creatorID: user?.id,
       lastEdit: new Date().toISOString(),
     })
-
-    console.log("Autosave Data: ", data)
-    console.log("Autosave Error: ", error)
   }
 }

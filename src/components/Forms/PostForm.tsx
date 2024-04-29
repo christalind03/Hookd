@@ -34,7 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
-import { Niconne } from "next/font/google"
 
 type Props = {
   isDraft?: boolean
@@ -55,7 +54,7 @@ const formSchema = z.object({
         message: "Description cannot be empty.",
       }
     ),
-  difficulty: z.string().refine((content) => content.trim() !== "N/A", {
+  difficulty: z.string().min(1, {
     message: "Difficulty cannot be empty",
   }),
   productImage: z.instanceof(Blob, {
@@ -72,7 +71,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
     defaultValues: {
       title: postData?.title || "",
       content: postData?.content || "",
-      difficulty: postData?.difficulty || "N/A",
+      difficulty: postData?.difficulty || "",
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -154,7 +153,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
   return (
     <Form {...formHook}>
       <form
-        className="space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
+        className="flex flex-col space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
         onSubmit={formHook.handleSubmit(handleSubmit)}
       >
         {error && (
@@ -287,7 +286,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
           )}
         />
 
-        <Button type="submit">Submit Post</Button>
+        <Button className="ml-auto" type="submit">Submit Post</Button>
       </form>
     </Form>
   )
