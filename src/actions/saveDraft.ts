@@ -28,21 +28,25 @@ export async function saveDraft(formData: FormData) {
   if (data) {
     const { data, error } = await supabaseClient
       .from("drafts")
-      .update({ title, content, hasImage: productImage instanceof File })
+      .update({
+        title,
+        content,
+        hasImage: productImage instanceof File,
+        lastEdit: new Date().toISOString(),
+      })
       .match({ id })
   } else {
     const {
       data: { user },
     } = await supabaseClient.auth.getUser()
 
-    const { data, error } = await supabaseClient
-      .from("drafts")
-      .insert({
-        id,
-        title,
-        content,
-        hasImage: productImage instanceof File,
-        creatorID: user?.id,
-      })
+    const { data, error } = await supabaseClient.from("drafts").insert({
+      id,
+      title,
+      content,
+      hasImage: productImage instanceof File,
+      creatorID: user?.id,
+      lastEdit: new Date().toISOString(),
+    })
   }
 }

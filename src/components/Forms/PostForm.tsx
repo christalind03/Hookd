@@ -26,10 +26,11 @@ import { UploadIcon } from "@radix-ui/react-icons"
 import { v4 } from "uuid"
 import debounce from "lodash.debounce"
 import { saveDraft } from "@/actions/saveDraft"
+import { type Draft } from "@/types/Draft"
 
 type Props = {
   isDraft?: boolean
-  postData?: Post
+  postData?: Draft | Post
   onSubmit: (formData: FormData) => Promise<Error | void>
 }
 
@@ -40,7 +41,8 @@ const formSchema = z.object({
   content: z
     .string()
     .refine(
-      (content) => content.trim() !== "" && content.trim() !== "<p></p>",
+      (content) =>
+        content.trim() !== "" && content.trim() !== '<p class="text-sm"></p>',
       {
         message: "Description cannot be empty.",
       }
@@ -52,8 +54,6 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
   const router = useRouter()
   const [error, setError] = useState<Error>()
   const [postID, setPostID] = useState<string>(postData?.id || v4())
-
-  console.log(postData)
 
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -69,7 +69,12 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
       const formData = new FormData()
       const zodData = formHook.getValues()
 
-      if (zodData.title || zodData.content || zodData.productImage) {
+      if (
+        zodData.title ||
+        (zodData.content !== "" &&
+          zodData.content !== '<p class="text-sm"></p>') ||
+        zodData.productImage
+      ) {
         formData.append("id", postID)
         formData.append("title", zodData.title)
         formData.append("content", zodData.content)
