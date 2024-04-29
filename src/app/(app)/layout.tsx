@@ -1,6 +1,7 @@
 import { NavBar } from "@/components/NavBar/NavBar"
 import { UserProvider } from "@/components/UserProvider"
 import { createClient } from "@/utils/supabase/server"
+import { Toaster } from "@/components/ui/Toaster"
 
 export default async function AppLayout({
   children,
@@ -14,6 +15,7 @@ export default async function AppLayout({
   return (
     <UserProvider supabaseUser={user}>
       <NavBar />
+      <Toaster />
 
       <main>
         {children}

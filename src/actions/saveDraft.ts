@@ -32,7 +32,7 @@ export async function saveDraft(formData: FormData) {
       .update({
         title,
         content,
-        difficulty,
+        difficulty: difficulty || "N/A",
         hasImage: productImage instanceof File,
         lastEdit: new Date().toISOString(),
       })

@@ -56,33 +56,39 @@ export function DisplayDrafts() {
           <DialogTitle>Drafts</DialogTitle>
         </DialogHeader>
 
-        {drafts.map((draftData) => (
-          <div
-            key={draftData.id}
-            className="flex gap-3 items-center justify-between px-3 py-1 rounded-md hover:bg-accent"
-            onClick={() =>{setIsOpen(false);router.replace(`/post/submit?draft=${draftData.id}`)}
-            }
-          >
-            <div>
-              <h5 className="font-bold">
-                {draftData.title || "No title provided."}
-              </h5>
-              <p className="text-muted-foreground text-xs">
-                Draft saved {calculateElapsedTime(draftData.lastEdit)} ago
-              </p>
-            </div>
-
-            <TrashIcon
-              className="text-destructive size-5"
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
-
-                removeDraft(draftData.id)
+        {drafts.length > 0 ? (
+          drafts.map((draftData) => (
+            <div
+              key={draftData.id}
+              className="flex gap-3 items-center justify-between px-3 py-1 rounded-md hover:bg-accent"
+              onClick={() => {
+                setIsOpen(false)
+                router.replace(`/post/submit?draft=${draftData.id}`)
               }}
-            />
-          </div>
-        ))}
+            >
+              <div>
+                <h5 className="font-bold">
+                  {draftData.title || "No title provided."}
+                </h5>
+                <p className="text-muted-foreground text-xs">
+                  Draft saved {calculateElapsedTime(draftData.lastEdit)} ago
+                </p>
+              </div>
+
+              <TrashIcon
+                className="text-destructive size-5"
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+
+                  removeDraft(draftData.id)
+                }}
+              />
+            </div>
+          ))
+        ) : (
+          <p>Nothing to display...</p>
+        )}
       </DialogContent>
 
       <DialogTrigger asChild>

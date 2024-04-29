@@ -52,7 +52,7 @@ export default function SubmitPost() {
     return (
       <div className="flex flex-col gap-5 items-center justify-center m-5">
         <div className="flex items-center justify-center w-full sm:w-[525px] md:w-[625px] lg:w-[750px]">
-          <h3 className="absolute font-extrabold text-3xl">Create Post</h3>
+          <h3 className="absolute font-extrabold text-3xl">Submit Post</h3>
 
           <div className="ml-auto">
             <DisplayDrafts />
@@ -63,7 +63,7 @@ export default function SubmitPost() {
           <Loading />
         ) : (
           <PostForm
-            isDraft={!postID}
+            isPosted={!!postID}
             postData={postData}
             onSubmit={(formData) =>
               postID ? editPost(formData) : submitPost(formData)

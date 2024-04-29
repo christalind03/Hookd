@@ -21,12 +21,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { TextEditor } from "@/components/TextEditor/TextEditor"
 import { supabaseClient } from "@/utils/supabase/client"
-import { type Post } from "@/types/Post"
+import { type Post, isPost } from "@/types/Post"
 import { UploadIcon } from "@radix-ui/react-icons"
 import { v4 } from "uuid"
 import debounce from "lodash.debounce"
 import { saveDraft } from "@/actions/saveDraft"
-import { type Draft } from "@/types/Draft"
+import { type Draft, isDraft } from "@/types/Draft"
 import {
   Select,
   SelectContent,
@@ -34,9 +34,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
+import { useToast } from "@/components/ui/useToast"
 
 type Props = {
-  isDraft?: boolean
+  isPosted?: boolean
   postData?: Draft | Post
   onSubmit: (formData: FormData) => Promise<Error | void>
 }
@@ -62,16 +63,19 @@ const formSchema = z.object({
   }),
 })
 
-export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
+export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
   const router = useRouter()
+  const { toast } = useToast()
   const [error, setError] = useState<Error>()
   const [postID, setPostID] = useState<string>(postData?.id || v4())
+  const [isReady, setIsReady] = useState(false)
 
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       title: postData?.title || "",
       content: postData?.content || "",
       difficulty: postData?.difficulty || "",
+      productImage: undefined,
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -79,17 +83,10 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
 
   const debounceDraft = useCallback(
     debounce(() => {
-      console.log("Autosaving...")
+      if (!isPosted) {
+        const zodData = formHook.getValues()
+        const formData = new FormData()
 
-      const formData = new FormData()
-      const zodData = formHook.getValues()
-
-      if (
-        zodData.title ||
-        (zodData.content.trim() !== "" && zodData.content.trim() !== '<p class="text-sm"></p>') ||
-        zodData.difficulty ||
-        zodData.productImage
-      ) {
         formData.append("id", postID)
         formData.append("title", zodData.title)
         formData.append("content", zodData.content)
@@ -97,6 +94,11 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
         formData.append("productImage", zodData.productImage || "")
 
         saveDraft(formData)
+
+        toast({
+          title: "🎉 Autosave Complete",
+          description: "Changes saved successfully.",
+        })
       }
     }, 1500),
     []
@@ -104,7 +106,17 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
 
   useEffect(() => {
     async function fetchImage() {
-      if (postData) {
+      if (isDraft(postData) && postData.hasImage) {
+        const { data, error } = await supabaseClient.storage
+          .from("drafts")
+          .download(`${postData.id}?burst=${Date.now()}`)
+
+        if (data) {
+          formHook.setValue("productImage", data)
+        }
+      }
+
+      if (isPost(postData)) {
         const { data, error } = await supabaseClient.storage
           .from("posts")
           .download(`${postData.id}?burst=${Date.now()}`)
@@ -117,14 +129,6 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
 
     fetchImage()
   }, [])
-
-  useEffect(() => {
-    if (isDraft) {
-      debounceDraft()
-
-      return () => debounceDraft.cancel()
-    }
-  }, [formHook.getValues()])
 
   async function handleSubmit(zodData: z.infer<typeof formSchema>) {
     const formData = new FormData()
@@ -154,7 +158,8 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
     <Form {...formHook}>
       <form
         className="flex flex-col space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
-        onSubmit={formHook.handleSubmit(handleSubmit)}
+        onChange={() => debounceDraft()}
+        onSubmit={(formData) => formHook.handleSubmit(handleSubmit)(formData)}
       >
         {error && (
           <Alert variant="destructive">
@@ -189,7 +194,13 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
               <FormMessage />
 
               <FormControl>
-                <TextEditor content={field.value} onChange={field.onChange} />
+                <TextEditor
+                  content={field.value}
+                  onChange={(editorContent) => {
+                    field.onChange(editorContent)
+                    debounceDraft()
+                  }}
+                />
               </FormControl>
             </FormItem>
           )}
@@ -233,7 +244,10 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={() => onChange(undefined)}
+                    onClick={() => {
+                      onChange(undefined)
+                      debounceDraft()
+                    }}
                   >
                     Cancel
                   </Button>
@@ -286,7 +300,9 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
           )}
         />
 
-        <Button className="ml-auto" type="submit">Submit Post</Button>
+        <Button className="ml-auto" type="submit">
+          Submit Post
+        </Button>
       </form>
     </Form>
   )
