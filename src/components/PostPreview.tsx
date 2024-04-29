@@ -19,13 +19,11 @@ export function PostPreview({ postData, userID }: Props) {
   const [isActive, setIsActive] = useState(true)
 
   useEffect(() => {
-    if (postData.hasImage) {
-      const { data } = supabaseClient.storage
-        .from("posts")
-        .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
+    const { data } = supabaseClient.storage
+      .from("posts")
+      .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
 
-      setImageURL(data.publicUrl)
-    }
+    setImageURL(data.publicUrl)
   }, [])
 
   async function onDelete() {

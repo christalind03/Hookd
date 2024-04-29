@@ -47,7 +47,9 @@ const formSchema = z.object({
         message: "Description cannot be empty.",
       }
     ),
-  productImage: z.instanceof(Blob).optional(),
+  productImage: z.instanceof(Blob, {
+    message: "Image cannot be empty.",
+  }),
 })
 
 export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
@@ -88,7 +90,7 @@ export function PostForm({ isDraft = true, postData, onSubmit }: Props) {
 
   useEffect(() => {
     async function fetchImage() {
-      if (postData && postData.hasImage) {
+      if (postData) {
         const { data, error } = await supabaseClient.storage
           .from("posts")
           .download(`${postData.id}?burst=${Date.now()}`)

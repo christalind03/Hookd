@@ -31,7 +31,6 @@ export async function submitPost(formData: FormData) {
     id,
     title,
     content,
-    hasImage: productImage instanceof File,
     creatorID: user?.id,
   })
 

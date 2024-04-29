@@ -17,13 +17,11 @@ export function Post({ postData, userID }: Props) {
   const [isActive, setIsActive] = useState(true)
 
   useEffect(() => {
-    if (postData.hasImage) {
-      const { data } = supabaseClient.storage
-        .from("posts")
-        .getPublicUrl(postData.id)
+    const { data } = supabaseClient.storage
+      .from("posts")
+      .getPublicUrl(postData.id)
 
-      setImageURL(data.publicUrl)
-    }
+    setImageURL(data.publicUrl)
   }, [])
 
   async function onDelete() {
