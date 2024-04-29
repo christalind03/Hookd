@@ -7,6 +7,7 @@ import { deletePost } from "@/actions/deletePost"
 import { useEffect, useState } from "react"
 import { supabaseClient } from "@/utils/supabase/client"
 import { Badge } from "@/components/ui/Badge"
+import { toggleFavorite } from "@/actions/toggleFavorite"
 
 type Props = {
   postData: Post
@@ -16,19 +17,45 @@ type Props = {
 export function Post({ postData, userID }: Props) {
   const [imageURL, setImageURL] = useState("")
   const [isActive, setIsActive] = useState(true)
+  const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
+    async function fetchFavorite() {
+      if (userID) {
+        const { data, error } = await supabaseClient
+          .from("favorites")
+          .select("*")
+          .match({
+            userID,
+            postID: postData.id,
+          })
+          .maybeSingle()
+
+        if (data) {
+          setIsFavorite(true)
+        }
+      }
+    }
+
     const { data } = supabaseClient.storage
       .from("posts")
       .getPublicUrl(postData.id)
 
     setImageURL(data.publicUrl)
+    fetchFavorite()
   }, [])
 
   async function onDelete() {
     if (postData) {
       await deletePost(postData.id)
       setIsActive(false)
+    }
+  }
+
+  async function onFavorite() {
+    if (userID) {
+      await toggleFavorite(userID, postData.id, isFavorite)
+      setIsFavorite(!isFavorite)
     }
   }
 
@@ -42,9 +69,11 @@ export function Post({ postData, userID }: Props) {
             </p>
 
             <PostActions
-              id={postData.id}
+              postID={postData.id}
               isAuthor={postData.creatorID === userID}
-              onDelete={onDelete}
+              isFavorite={isFavorite}
+              onDelete={() => onDelete()}
+              onFavorite={() => onFavorite()}
             />
           </div>
 

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { supabaseClient } from "@/utils/supabase/client"
 import { Badge } from "@/components/ui/Badge"
+import { toggleFavorite } from "@/actions/toggleFavorite"
 
 type Props = {
   postData: Post
@@ -18,13 +19,32 @@ type Props = {
 export function PostPreview({ postData, userID }: Props) {
   const [imageURL, setImageURL] = useState("")
   const [isActive, setIsActive] = useState(true)
+  const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
+    async function fetchFavorite() {
+      if (userID) {
+        const { data, error } = await supabaseClient
+          .from("favorites")
+          .select("*")
+          .match({
+            userID,
+            postID: postData.id,
+          })
+          .maybeSingle()
+
+        if (data) {
+          setIsFavorite(true)
+        }
+      }
+    }
+
     const { data } = supabaseClient.storage
       .from("posts")
       .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
 
-    setImageURL(data.publicUrl)
+      setImageURL(data.publicUrl)
+      fetchFavorite()
   }, [])
 
   async function onDelete() {
@@ -34,37 +54,50 @@ export function PostPreview({ postData, userID }: Props) {
     }
   }
 
+  async function onFavorite() {
+    if (userID) {
+      await toggleFavorite(userID, postData.id, isFavorite)
+      setIsFavorite(!isFavorite)
+    }
+  }
+
   if (isActive) {
     return (
-      <Link className="p-3 rounded-md space-y-3 hover:bg-accent" href={`/post/${postData.id}`}>
+      <Link
+        className="flex flex-col gap-3 p-3 rounded-md hover:bg-accent"
+        href={`/post/${postData.id}`}
+      >
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-[10px]">
             {convertTimestamp(postData.creationTimestamp)}
           </p>
 
           <PostActions
-            id={postData.id}
+            postID={postData.id}
             isAuthor={postData.creatorID === userID}
-            onDelete={onDelete}
+            isFavorite={isFavorite}
+            onDelete={() => onDelete()}
+            onFavorite={() => onFavorite()}
           />
         </div>
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
-        
-        <Badge
-          className={"grow-0" &&
-            postData.difficulty === "Beginner"
-              ? "hover:bg-green-300 bg-green-300 text-green-700"
-              : postData.difficulty === "Intermediate"
-              ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
-              : "hover:bg-red-300 bg-red-300 text-red-700"
-          }
-        >
-          {postData.difficulty}
-        </Badge>
+
+        <div>
+          <Badge
+            className={
+              postData.difficulty === "Beginner"
+                ? "hover:bg-green-300 bg-green-300 text-green-700"
+                : postData.difficulty === "Intermediate"
+                ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
+                : "hover:bg-red-300 bg-red-300 text-red-700"
+            }
+          >
+            {postData.difficulty}
+          </Badge>
+        </div>
 
         {imageURL && <img className="rounded-md" src={imageURL} />}
-        
       </Link>
     )
   }

@@ -1,6 +1,10 @@
 "use client"
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import {
+  DotsHorizontalIcon,
+  StarFilledIcon,
+  StarIcon,
+} from "@radix-ui/react-icons"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,21 +18,56 @@ import { Link2Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 
 type Props = {
-  id: string
+  postID: string
   isAuthor: boolean
+  isFavorite: boolean
   onDelete: () => void
+  onFavorite: () => void
 }
 
-export function PostActions({ id, isAuthor, onDelete }: Props) {
+export function PostActions({
+  postID,
+  isAuthor,
+  isFavorite,
+  onDelete,
+  onFavorite,
+}: Props) {
   const router = useRouter()
 
   return (
     <DropdownMenu>
       <DropdownMenuContent align="end" className="w-36" forceMount>
-        <DropdownMenuItem onClick={() => {
-          navigator.clipboard.writeText(`${window.location.origin}/post/${id}`)
-        }}>
+        <DropdownMenuItem
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+
+            navigator.clipboard.writeText(
+              `${window.location.origin}/post/${postID}`
+            )
+          }}
+        >
           <IconLabel text="Copy Link" icon={<Link2Icon />} />
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+
+            onFavorite()
+          }}
+        >
+          <IconLabel
+            text="Favorite"
+            icon={
+              isFavorite ? (
+                <StarFilledIcon className="text-yellow-500" />
+              ) : (
+                <StarIcon />
+              )
+            }
+          />
         </DropdownMenuItem>
 
         {isAuthor && (
@@ -37,8 +76,10 @@ export function PostActions({ id, isAuthor, onDelete }: Props) {
 
             <DropdownMenuItem
               onClick={(event) => {
+                event.preventDefault()
                 event.stopPropagation()
-                router.push(`/post/submit?edit=${id}`)
+
+                router.push(`/post/submit?edit=${postID}`)
               }}
             >
               <IconLabel text="Edit Post" icon={<Pencil1Icon />} />
@@ -46,7 +87,9 @@ export function PostActions({ id, isAuthor, onDelete }: Props) {
 
             <DropdownMenuItem
               onClick={(event) => {
+                event.preventDefault()
                 event.stopPropagation()
+
                 onDelete()
               }}
             >
