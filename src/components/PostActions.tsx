@@ -11,7 +11,7 @@ import {
 import { IconLabel } from "@/components/IconLabel"
 import { Fragment } from "react"
 import { Link2Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 type Props = {
   id: string
@@ -25,7 +25,9 @@ export function PostActions({ id, isAuthor, onDelete }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuContent align="end" className="w-36" forceMount>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => {
+          navigator.clipboard.writeText(`${window.location.origin}/post/${id}`)
+        }}>
           <IconLabel text="Copy Link" icon={<Link2Icon />} />
         </DropdownMenuItem>
 
