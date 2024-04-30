@@ -16,6 +16,7 @@ import { IconLabel } from "@/components/IconLabel"
 import { Fragment } from "react"
 import { Link2Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/useToast"
 
 type Props = {
   postID: string
@@ -33,6 +34,7 @@ export function PostActions({
   onFavorite,
 }: Props) {
   const router = useRouter()
+  const { toast } = useToast()
 
   return (
     <DropdownMenu>
@@ -45,6 +47,11 @@ export function PostActions({
             navigator.clipboard.writeText(
               `${window.location.origin}/post/${postID}`
             )
+
+            toast({
+              title: "🔗 Link Copied",
+              description: "Link copied to clipboard.",
+            })
           }}
         >
           <IconLabel text="Copy Link" icon={<Link2Icon />} />
