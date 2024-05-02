@@ -1,50 +1,26 @@
 "use client"
 
-import { supabaseClient } from "@/utils/supabase/client"
-import { PostPreview } from "@/components/PostPreview"
-import { Separator } from "@/components/ui/Separator"
-import { useEffect, useState } from "react"
-import { type Post } from "@/types/Post"
+import { InfiniteFeed } from "@/components/InfiniteFeed"
 import { useUser } from "@/components/UserProvider"
+import { supabaseClient } from "@/utils/supabase/client"
 
 export default function Home() {
   const user = useUser()
-  const [posts, setPosts] = useState<Post[]>()
 
-  useEffect(() => {
-    async function fetchPosts() {
-      const { data, error } = await supabaseClient
-        .from("posts")
-        .select("*")
-        .order("creationTimestamp", { ascending: false })
+  async function fetchPosts(offset: number, pageCount: number) {
+    console.log("Fetching posts...")
 
-      if (data) {
-        setPosts(data)
-      }
-    }
+    const from = offset * pageCount
+    const to = from + pageCount - 1
 
-    fetchPosts()
-  }, [])
+    const { data, error } = await supabaseClient
+      .from("posts")
+      .select("*")
+      .range(from, to)
+      .order("creationTimestamp", { ascending: false })
 
-  return (
-    <div className="flex flex-col gap-5 items-center justify-center m-5">
-      {posts ? (
-        posts.length > 0 ? (
-          posts.map((postData, postIndex) => (
-            <div
-              className="space-y-5 sm:w-[525px] md:w-[625px] lg:w-[750px]"
-              key={postData.id}
-            >
-              {!!postIndex && <Separator />}
-              <PostPreview postData={postData} userID={user?.id || ""} />
-            </div>
-          ))
-        ) : (
-          <p>Nothing to display...</p>
-        )
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
-  )
+    return data ? data : []
+  }
+
+  return <InfiniteFeed userID={user?.id} fetchPosts={fetchPosts} />
 }
