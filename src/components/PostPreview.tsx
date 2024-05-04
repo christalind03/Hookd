@@ -25,7 +25,7 @@ export function PostPreview({ postData, userID }: Props) {
     async function fetchFavorite() {
       if (userID) {
         const { data, error } = await supabaseClient
-          .from("favorites")
+          .from("savedPosts")
           .select("*")
           .match({
             userID,

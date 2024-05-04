@@ -13,7 +13,7 @@ export default async function AppLayout({
   } = await supabaseClient.auth.getUser()
 
   const { data, error } = await supabaseClient
-    .from("users")
+    .from("userRoles")
     .select("role")
     .match({
       id: user?.id,

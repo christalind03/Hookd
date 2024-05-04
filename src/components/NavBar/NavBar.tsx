@@ -12,7 +12,9 @@ export function NavBar() {
 
   return (
     <div className="backdrop-blur-lg flex h-14 items-center justify-between left-0 px-5 sticky top-0 z-10">
-      <h1 className="cursor-pointer font-extrabold text-xl">🧶 Threadify</h1>
+      <Link href="/home">
+        <h1 className="cursor-pointer font-extrabold text-xl">🧶 Threadify</h1>
+      </Link>
 
       <div className="flex gap-3 items-center">
         <MagnifyingGlassIcon className="size-5 hover:text-blue-500" />

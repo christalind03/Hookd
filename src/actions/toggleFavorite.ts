@@ -7,7 +7,7 @@ export async function toggleFavorite(userID: string, postID: string, isFavorite:
 
   if (isFavorite) {
     const { data, error } = await supabaseClient
-      .from("favorites")
+      .from("savedPosts")
       .delete()
       .match({
         userID,
@@ -16,7 +16,7 @@ export async function toggleFavorite(userID: string, postID: string, isFavorite:
 
   } else {
     const { data, error } = await supabaseClient
-      .from("favorites")
+      .from("savedPosts")
       .insert({
         userID,
         postID,

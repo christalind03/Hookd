@@ -22,8 +22,6 @@ export function InfiniteFeed({ userID, fetchPosts }: Props) {
 
   const debounceScroll = useCallback(
     debounce(() => {
-      console.log("Debouncing visible state...")
-
       if (feedContainer.current && typeof window !== "undefined") {
         const { bottom } = feedContainer.current.getBoundingClientRect()
         const { innerHeight } = window

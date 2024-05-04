@@ -2,8 +2,8 @@
 
 import {
   DotsHorizontalIcon,
-  StarFilledIcon,
-  StarIcon,
+  BookmarkFilledIcon,
+  BookmarkIcon,
 } from "@radix-ui/react-icons"
 import {
   DropdownMenu,
@@ -66,12 +66,12 @@ export function PostActions({
           }}
         >
           <IconLabel
-            text="Favorite"
+            text="Save"
             icon={
               isFavorite ? (
-                <StarFilledIcon className="text-yellow-500" />
+                <BookmarkFilledIcon className="text-yellow-500" />
               ) : (
-                <StarIcon />
+                <BookmarkIcon />
               )
             }
           />
