@@ -20,8 +20,8 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 export function DisplayDrafts() {
-  const user = useUser()
   const router = useRouter()
+  const supabaseUser = useUser()
   const [drafts, setDrafts] = useState<Draft[]>([])
   const [refreshSeed, setRefreshSeed] = useState<number>(0)
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -32,7 +32,7 @@ export function DisplayDrafts() {
         .from("drafts")
         .select("*")
         .match({
-          creatorID: user?.id,
+          creatorID: supabaseUser?.id,
         })
         .order("lastEdit", { ascending: false })
 

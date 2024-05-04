@@ -12,14 +12,20 @@ export default async function AppLayout({
     data: { user },
   } = await supabaseClient.auth.getUser()
 
+  const { data, error } = await supabaseClient
+    .from("users")
+    .select("role")
+    .match({
+      id: user?.id,
+    })
+    .single()
+
   return (
-    <UserProvider supabaseUser={user}>
+    <UserProvider supabaseUser={user} supabaseUserRole={data?.role}>
       <NavBar />
       <Toaster />
 
-      <main>
-        {children}
-      </main>
+      <main>{children}</main>
     </UserProvider>
   )
 }

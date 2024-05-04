@@ -1,15 +1,13 @@
 "use client"
 
 import { InfiniteFeed } from "@/components/InfiniteFeed"
-import { useUser } from "@/components/UserProvider"
+import { useUser, useUserRole } from "@/components/UserProvider"
 import { supabaseClient } from "@/utils/supabase/client"
 
 export default function Home() {
-  const user = useUser()
+  const supabaseUser = useUser()
 
   async function fetchPosts(offset: number, pageCount: number) {
-    console.log("Fetching posts...")
-
     const from = offset * pageCount
     const to = from + pageCount - 1
 
@@ -22,5 +20,5 @@ export default function Home() {
     return data ? data : []
   }
 
-  return <InfiniteFeed userID={user?.id} fetchPosts={fetchPosts} />
+  return <InfiniteFeed userID={supabaseUser?.id} fetchPosts={fetchPosts} />
 }
