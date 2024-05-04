@@ -7,7 +7,7 @@ type Props = {
 export function IconLabel({ text, icon, isDestructive }: Props) {
   return (
     <div
-      className={`flex items-center justify-center space-x-3 ${
+      className={`flex items-center space-x-3 text-sm ${
         isDestructive ? "text-destructive" : ""
       }`}
     >

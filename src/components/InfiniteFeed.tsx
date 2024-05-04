@@ -64,7 +64,7 @@ export function InfiniteFeed({ userID, fetchPosts }: Props) {
     >
       {loadedPosts.map((postData, postIndex) => (
         <div
-          className="space-y-5 sm:w-[525px] md:w-[625px] lg:w-[750px]"
+          className="space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
           key={postIndex}
         >
           {!!postIndex && <Separator />}
