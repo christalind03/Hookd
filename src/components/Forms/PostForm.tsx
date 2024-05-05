@@ -108,7 +108,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
     async function fetchImage() {
       if (isDraft(postData) && postData.hasImage) {
         const { data, error } = await supabaseClient.storage
-          .from("drafts")
+          .from("draft")
           .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {
@@ -118,7 +118,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
 
       if (isPost(postData)) {
         const { data, error } = await supabaseClient.storage
-          .from("posts")
+          .from("post")
           .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {

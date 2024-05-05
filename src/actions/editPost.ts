@@ -13,7 +13,7 @@ export async function editPost(formData: FormData) {
   const supabaseClient = await createClient()
 
   // Update storage.posts bucket.
-  const serverResponse = uploadFile("posts", id, productImage)
+  const serverResponse = uploadFile("post", id, productImage)
 
   if (isError(serverResponse)) {
     return serverResponse
@@ -21,7 +21,7 @@ export async function editPost(formData: FormData) {
 
   // Update public.posts table.
   const { data, error } = await supabaseClient
-    .from("posts")
+    .from("post")
     .update({
       title,
       content,

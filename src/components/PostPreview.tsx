@@ -25,7 +25,7 @@ export function PostPreview({ postData, userID }: Props) {
     async function fetchFavorite() {
       if (userID) {
         const { data, error } = await supabaseClient
-          .from("savedPosts")
+          .from("savedPost")
           .select("*")
           .match({
             userID,
@@ -40,7 +40,7 @@ export function PostPreview({ postData, userID }: Props) {
     }
 
     const { data } = supabaseClient.storage
-      .from("posts")
+      .from("post")
       .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
 
       setImageURL(data.publicUrl)

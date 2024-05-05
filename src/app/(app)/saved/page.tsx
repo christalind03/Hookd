@@ -12,15 +12,15 @@ export default function Saved() {
     const to = from + pageCount - 1
 
     const { data, error } = await supabaseClient
-      .from("savedPosts")
-      .select("postID, posts(*)")
+      .from("savedPost")
+      .select("post(*)")
       .match({
         userID: supabaseUser?.id,
       })
       .range(from, to)
       .order("saveTimestamp", { ascending: false })
 
-    return data ? data.map(({ posts }) => posts) : []
+    return data ? data.map(({ post }) => post) : []
   }
 
   return (

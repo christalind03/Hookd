@@ -28,7 +28,7 @@ export default function SubmitPost() {
 
       if (draftID || postID) {
         const { data, error } = await supabaseClient
-          .from(draftID ? "drafts" : "posts")
+          .from(draftID ? "draft" : "post")
           .select("*")
           .match({
             id: draftID || postID,

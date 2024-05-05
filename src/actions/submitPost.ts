@@ -17,7 +17,7 @@ export async function submitPost(formData: FormData) {
   deleteDraft(id)
 
   // Update storage.posts bucket.
-  const serverResponse = uploadFile("posts", id, productImage)
+  const serverResponse = uploadFile("post", id, productImage)
 
   if (isError(serverResponse)) {
     return serverResponse
@@ -28,7 +28,7 @@ export async function submitPost(formData: FormData) {
     data: { user }
   } = await supabaseClient.auth.getUser()
 
-  const { data, error } = await supabaseClient.from("posts").insert({
+  const { data, error } = await supabaseClient.from("post").insert({
     id,
     title,
     content,

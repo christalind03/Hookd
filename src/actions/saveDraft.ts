@@ -13,7 +13,7 @@ export async function saveDraft(formData: FormData) {
   const supabaseClient = await createClient()
 
   // Update storage.drafts bucket.
-  const serverResponse = uploadFile("drafts", id, productImage)
+  const serverResponse = uploadFile("draft", id, productImage)
 
   if (isError(serverResponse)) {
     return serverResponse
@@ -21,14 +21,14 @@ export async function saveDraft(formData: FormData) {
 
   // Update public.drafts table.
   const { data, error } = await supabaseClient
-    .from("drafts")
+    .from("draft")
     .select("*")
     .match({ id })
     .maybeSingle()
 
   if (data) {
     const { data, error } = await supabaseClient
-      .from("drafts")
+      .from("draft")
       .update({
         title,
         content,
@@ -42,7 +42,7 @@ export async function saveDraft(formData: FormData) {
       data: { user },
     } = await supabaseClient.auth.getUser()
 
-    const { data, error } = await supabaseClient.from("drafts").insert({
+    const { data, error } = await supabaseClient.from("draft").insert({
       id,
       title,
       content,

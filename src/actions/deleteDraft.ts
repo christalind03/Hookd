@@ -6,11 +6,11 @@ export async function deleteDraft(id: string) {
   const supabaseClient = await createClient()
 
   await supabaseClient.storage
-    .from("drafts")
+    .from("draft")
     .remove([`${id}`])
   
   await supabaseClient
-    .from("drafts")
+    .from("draft")
     .delete()
     .match({
       id,

@@ -12,7 +12,7 @@ export default function Home() {
     const to = from + pageCount - 1
 
     const { data, error } = await supabaseClient
-      .from("posts")
+      .from("post")
       .select("*")
       .range(from, to)
       .order("creationTimestamp", { ascending: false })
