@@ -43,6 +43,7 @@ type Props = {
 }
 
 const formSchema = z.object({
+  id: z.string(),
   title: z.string().min(1, {
     message: "Title cannot be empty.",
   }),
@@ -58,6 +59,9 @@ const formSchema = z.object({
   difficulty: z.string().min(1, {
     message: "Difficulty cannot be empty",
   }),
+  yarnWeight: z.string().min(1, {
+    message: "Yarn weight cannot be empty.",
+  }),
   productImage: z.instanceof(Blob, {
     message: "Image cannot be empty.",
   }),
@@ -67,14 +71,14 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const [error, setError] = useState<Error>()
-  const [postID, setPostID] = useState<string>(postData?.id || v4())
-  const [isReady, setIsReady] = useState(false)
 
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
+      id: postData?.id || v4(),
       title: postData?.title || "",
       content: postData?.content || "",
       difficulty: postData?.difficulty || "",
+      yarnWeight: postData?.yarnWeight || "",
       productImage: undefined,
     },
     mode: "onChange",
@@ -84,13 +88,10 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
   const debounceDraft = useCallback(
     debounce(() => {
       if (!isPosted) {
-        const zodData = formHook.getValues()
         const formData = new FormData()
+        const zodData = formHook.getValues()
 
-        formData.append("id", postID)
-        formData.append("title", zodData.title)
-        formData.append("content", zodData.content)
-        formData.append("difficulty", zodData.difficulty)
+        formData.append("postData", JSON.stringify(zodData))
         formData.append("productImage", zodData.productImage || "")
 
         saveDraft(formData)
@@ -130,13 +131,10 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
     fetchImage()
   }, [])
 
-  async function handleSubmit(zodData: z.infer<typeof formSchema>) {
+  async function handleSubmit(zodData: z.infer<typeof formSchema>) {  
     const formData = new FormData()
 
-    formData.append("id", postID)
-    formData.append("title", zodData.title)
-    formData.append("content", zodData.content)
-    formData.append("difficulty", zodData.difficulty)
+    formData.append("postData", JSON.stringify(zodData))
     formData.append("productImage", zodData.productImage || "")
 
     const serverResponse = await onSubmit(formData)
@@ -224,6 +222,36 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select Difficulty" />
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={formHook.control}
+          name="yarnWeight"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Yarn Weight</FormLabel>
+              <FormMessage />
+
+              <Select defaultValue={field.value} onValueChange={field.onChange}>
+                <SelectContent>
+                  <SelectItem value="Lace">Lace</SelectItem>
+                  <SelectItem value="Super Fine">Super Fine</SelectItem>
+                  <SelectItem value="Fine">Fine</SelectItem>
+                  <SelectItem value="Light">Light</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="Bulky">Bulky</SelectItem>
+                  <SelectItem value="Super Bulky">Super Bulky</SelectItem>
+                  <SelectItem value="Jumbo">Jumbo</SelectItem>
+                </SelectContent>
+
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Yarn Weight" />
                   </SelectTrigger>
                 </FormControl>
               </Select>

@@ -3,6 +3,7 @@ export type Draft = {
   title: string
   content: string
   difficulty: string
+  yarnWeight: string
   hasImage: boolean
   creatorID: string
   lastEdit: string
@@ -16,6 +17,7 @@ export function isDraft(obj: any): obj is Draft {
     typeof obj.title === "string" &&
     typeof obj.content === "string" &&
     typeof obj.difficulty === "string" &&
+    typeof obj.yarnWeight === "string" &&
     typeof obj.hasImage === "boolean" &&
     typeof obj.creatorID === "string" &&
     typeof obj.lastEdit === "string"

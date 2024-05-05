@@ -6,18 +6,15 @@ import { isError } from "@/types/Error"
 import { deleteDraft } from "@/actions/deleteDraft"
 
 export async function submitPost(formData: FormData) {
-  const id = formData.get("id") as string
-  const title = formData.get("title")
-  const content = formData.get("content")
-  const difficulty = formData.get("difficulty")
+  const postaData = JSON.parse(formData.get("postData") as string)
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
   // Delete draft entry.
-  deleteDraft(id)
+  deleteDraft(postaData.id)
 
   // Update storage.posts bucket.
-  const serverResponse = uploadFile("post", id, productImage)
+  const serverResponse = uploadFile("post", postaData.id, productImage)
 
   if (isError(serverResponse)) {
     return serverResponse
@@ -27,14 +24,17 @@ export async function submitPost(formData: FormData) {
   const {
     data: { user }
   } = await supabaseClient.auth.getUser()
-
-  const { data, error } = await supabaseClient.from("post").insert({
-    id,
-    title,
-    content,
-    difficulty,
-    creatorID: user?.id,
-  })
+  
+  const { data, error } = await supabaseClient
+    .from("post")
+    .insert({
+      id: postaData.id,
+      title: postaData.title,
+      content: postaData.content,
+      difficulty: postaData.difficulty,
+      yarnWeight: postaData.yarnWeight,
+      creatorID: user?.id,
+    })
 
   if (error) {
     return {

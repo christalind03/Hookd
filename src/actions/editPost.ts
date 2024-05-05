@@ -5,15 +5,12 @@ import { isError } from "@/types/Error"
 import { uploadFile } from "@/utils/uploadFile"
 
 export async function editPost(formData: FormData) {
-  const id = formData.get("id") as string
-  const title = formData.get("title")
-  const content = formData.get("content")
-  const difficulty = formData.get("difficulty")
+  const postaData = JSON.parse(formData.get("postData") as string)
   const productImage = formData.get("productImage") as Blob
   const supabaseClient = await createClient()
 
   // Update storage.posts bucket.
-  const serverResponse = uploadFile("post", id, productImage)
+  const serverResponse = uploadFile("post", postaData.id, productImage)
 
   if (isError(serverResponse)) {
     return serverResponse
@@ -23,12 +20,13 @@ export async function editPost(formData: FormData) {
   const { data, error } = await supabaseClient
     .from("post")
     .update({
-      title,
-      content,
-      difficulty,
+      title: postaData.title,
+      content: postaData.content,
+      difficulty: postaData.difficulty,
+      yarnWeight: postaData.yarnWeight,
     })
     .match({
-      id,
+      id: postaData.id,
     })
 
   if (error) {
