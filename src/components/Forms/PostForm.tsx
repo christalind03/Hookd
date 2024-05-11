@@ -2,7 +2,7 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert"
 import { Button } from "@/components/ui/Button"
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
+import { ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
 import {
   Form,
   FormControl,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 import { type Error, isError } from "@/types/Error"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -34,9 +34,25 @@ import {
   SelectValue,
 } from "@/components/ui/Select"
 import { useToast } from "@/components/ui/useToast"
+import { Label } from "../ui/Label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/Command"
+import { postTags } from "@/constants/postTags"
+import { Badge } from "@/components/ui/Badge"
 
 type Props = {
-  isPosted?: boolean
+  isEdit?: boolean
   postData?: Draft | Post
   onSubmit: (formData: FormData) => Promise<Error | void>
 }
@@ -58,15 +74,13 @@ const formSchema = z.object({
   difficulty: z.string().min(1, {
     message: "Difficulty cannot be empty",
   }),
-  yarnWeight: z.string().min(1, {
-    message: "Yarn weight cannot be empty.",
-  }),
+  postTags: z.array(z.object({ postTag: z.string() })),
   postImage: z.instanceof(Blob, {
     message: "Image cannot be empty.",
   }),
 })
 
-export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
+export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const [error, setError] = useState<Error>()
@@ -77,21 +91,31 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
       title: postData?.title || "",
       content: postData?.content || "",
       difficulty: postData?.difficulty || "",
-      yarnWeight: postData?.yarnWeight || "",
+      postTags:
+        postData?.postTags.map((tagName) => {
+          return { postTag: tagName }
+        }) || [],
       postImage: undefined,
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 
+  const tagsArray = useFieldArray({
+    name: "postTags",
+    control: formHook.control,
+  })
+
   const debounceDraft = useCallback(
     debounce(() => {
-      if (!isPosted) {
+      if (!isEdit) {
         const formData = new FormData()
         const formValues = formHook.getValues()
 
         for (const [formProperty, formValue] of Object.entries(formValues)) {
-          formData.append(formProperty, formValue)
+          Array.isArray(formValue)
+            ? formData.append(formProperty, JSON.stringify(formValue))
+            : formData.append(formProperty, formValue)
         }
 
         saveDraft(formData)
@@ -109,22 +133,26 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
     async function fetchImage() {
       if (isDraft(postData) && postData.hasImage) {
         const { data, error } = await supabaseClient.storage
-          .from("draft")
+          .from("drafts")
           .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {
           formHook.setValue("postImage", data)
         }
+
+        console.log(data, error)
       }
 
       if (isPost(postData)) {
         const { data, error } = await supabaseClient.storage
-          .from("post")
+          .from("posts")
           .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {
           formHook.setValue("postImage", data)
         }
+
+        console.log(data, error)
       }
     }
 
@@ -135,7 +163,9 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
     const formData = new FormData()
 
     for (const [formProperty, formValue] of Object.entries(formValues)) {
-      formData.append(formProperty, formValue)
+      Array.isArray(formValue)
+        ? formData.append(formProperty, JSON.stringify(formValue))
+        : formData.append(formProperty, formValue)
     }
 
     const serverResponse = await onSubmit(formData)
@@ -201,61 +231,6 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
                   }}
                 />
               </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={formHook.control}
-          name="difficulty"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Difficulty</FormLabel>
-              <FormMessage />
-
-              <Select defaultValue={field.value} onValueChange={field.onChange}>
-                <SelectContent>
-                  <SelectItem value="Beginner">Beginner</SelectItem>
-                  <SelectItem value="Intermediate">Intermediate</SelectItem>
-                  <SelectItem value="Advanced">Advanced</SelectItem>
-                </SelectContent>
-
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Difficulty" />
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={formHook.control}
-          name="yarnWeight"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Yarn Weight</FormLabel>
-              <FormMessage />
-
-              <Select defaultValue={field.value} onValueChange={field.onChange}>
-                <SelectContent>
-                  <SelectItem value="Lace">Lace</SelectItem>
-                  <SelectItem value="Super Fine">Super Fine</SelectItem>
-                  <SelectItem value="Fine">Fine</SelectItem>
-                  <SelectItem value="Light">Light</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="Bulky">Bulky</SelectItem>
-                  <SelectItem value="Super Bulky">Super Bulky</SelectItem>
-                  <SelectItem value="Jumbo">Jumbo</SelectItem>
-                </SelectContent>
-
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Yarn Weight" />
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
             </FormItem>
           )}
         />
@@ -328,6 +303,98 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={formHook.control}
+          name="difficulty"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Difficulty</FormLabel>
+              <FormMessage />
+
+              <Select defaultValue={field.value} onValueChange={field.onChange}>
+                <SelectContent>
+                  <SelectItem value="Beginner">Beginner</SelectItem>
+                  <SelectItem value="Intermediate">Intermediate</SelectItem>
+                  <SelectItem value="Advanced">Advanced</SelectItem>
+                </SelectContent>
+
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Difficulty" />
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
+            </FormItem>
+          )}
+        />
+
+        <div className="border flex flex-col gap-3 p-4 rounded shadow">
+          <div className="flex items-center justify-between">
+            <Label>Tags</Label>
+
+            <Popover>
+              <PopoverContent align="end" className="p-0">
+                <Command>
+                  <CommandInput placeholder="Search..." />
+
+                  <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+
+                    <CommandGroup>
+                      {postTags.map((tagName, tagIndex) => {
+                        if (
+                          !tagsArray.fields.find(
+                            ({ postTag }) => postTag === tagName
+                          )
+                        ) {
+                          return (
+                            <CommandItem
+                              key={tagName}
+                              onSelect={() => {
+                                tagsArray.append({
+                                  postTag: tagName,
+                                })
+                                debounceDraft()
+                              }}
+                            >
+                              {tagName}
+                            </CommandItem>
+                          )
+                        }
+                      })}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+
+              <PopoverTrigger asChild>
+                <div className="p-1 rounded-md hover:bg-accent">
+                  <PlusIcon />
+                </div>
+              </PopoverTrigger>
+            </Popover>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            {tagsArray.fields.length === 0 ? (
+              <p className="text-sm">No tags selected.</p>
+            ) : (
+              tagsArray.fields.map(({ postTag }, fieldIndex) => (
+                <Badge
+                  key={postTag}
+                  className="hover:bg-destructive"
+                  onClick={() => {
+                    tagsArray.remove(fieldIndex)
+                    debounceDraft()
+                  }}
+                >
+                  {postTag}
+                </Badge>
+              ))
+            )}
+          </div>
+        </div>
 
         <Button className="ml-auto" type="submit">
           Submit Post

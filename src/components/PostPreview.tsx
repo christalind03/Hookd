@@ -40,7 +40,7 @@ export function PostPreview({ postData, userID }: Props) {
     }
 
     const { data } = supabaseClient.storage
-      .from("post")
+      .from("posts")
       .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
 
       setImageURL(data.publicUrl)
@@ -83,7 +83,7 @@ export function PostPreview({ postData, userID }: Props) {
 
         <h3 className="font-bold text-lg">{postData.title}</h3>
 
-        <div>
+        <div className="flex flex-wrap gap-3">
           <Badge
             className={
               postData.difficulty === "Beginner"
@@ -95,6 +95,14 @@ export function PostPreview({ postData, userID }: Props) {
           >
             {postData.difficulty}
           </Badge>
+
+          {postData.postTags.map((tagName) => (
+            <Badge
+              key={tagName}
+            >
+              {tagName}
+            </Badge>
+          ))}
         </div>
 
         {imageURL && <img className="rounded-md" src={imageURL} />}

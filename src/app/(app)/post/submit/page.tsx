@@ -62,7 +62,7 @@ export default function SubmitPost() {
           <Loading />
         ) : (
           <PostForm
-            isPosted={!!postID}
+            isEdit={!!postID}
             postData={postData}
             onSubmit={(formData) => submitPost(!!postID, formData)}
           />

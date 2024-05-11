@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server"
 import { uploadFile } from "@/actions/uploadFile"
 import { isError } from "@/types/Error"
 import { deleteDraft } from "@/actions/deleteDraft"
-import { toPostData } from "@/actions/toFormData"
+import { toPostData } from "@/actions/toPostData"
 
 export async function submitPost(isEdit: boolean, formData: FormData) {
   const postData = toPostData(formData)
@@ -36,7 +36,9 @@ export async function submitPost(isEdit: boolean, formData: FormData) {
     title: postData.title,
     content: postData.content,
     difficulty: postData.difficulty,
-    yarnWeight: postData.yarnWeight,
+    postTags: postData.postTags.map(
+      ({ postTag }: { postTag: string }) => postTag
+    ),
     creatorID: user?.id,
   })
 

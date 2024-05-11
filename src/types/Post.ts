@@ -3,7 +3,7 @@ export type Post = {
   title: string
   content: string
   difficulty: string
-  yarnWeight: string
+  postTags: string[]
   creatorID: string
   creationTimestamp: string
 }
@@ -16,8 +16,9 @@ export function isPost(obj: any): obj is Post {
     typeof obj.title === "string" &&
     typeof obj.content === "string" &&
     typeof obj.difficulty === "string" &&
-    typeof obj.yarnWeight === "string" &&
     typeof obj.creatorID === "string" &&
-    typeof obj.creationTimestamp === "string"
+    typeof obj.creationTimestamp === "string" &&
+    Array.isArray(obj.postTags) &&
+    obj.postTags.every((tagName: any) => typeof tagName === "string")
   )
 }

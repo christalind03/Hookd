@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server"
 import { uploadFile } from "@/actions/uploadFile"
 import { isError } from "@/types/Error"
-import { toPostData } from "@/actions/toFormData"
+import { toPostData } from "@/actions/toPostData"
 
 export async function saveDraft(formData: FormData) {
   const postData = toPostData(formData)
@@ -30,7 +30,9 @@ export async function saveDraft(formData: FormData) {
     title: postData.title,
     content: postData.content,
     difficulty: postData.difficulty || "N/A",
-    yarnWeight: postData.yarnWeight || "N/A",
+    postTags: postData.postTags.map(
+      ({ postTag }: { postTag: string }) => postTag
+    ),
     hasImage: postData.postImage instanceof File,
     creatorID: user?.id,
     lastEdit: new Date().toISOString(),
