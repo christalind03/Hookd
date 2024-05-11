@@ -7,7 +7,6 @@ import { useUser } from "@/components/UserProvider"
 import { useEffect, useState } from "react"
 import { type Post } from "@/types/Post"
 import { supabaseClient } from "@/utils/supabase/client"
-import { editPost } from "@/actions/editPost"
 import { Loading } from "@/components/Loading"
 import { DisplayDrafts } from "@/components/DisplayDrafts"
 import { type Draft } from "@/types/Draft"
@@ -65,9 +64,7 @@ export default function SubmitPost() {
           <PostForm
             isPosted={!!postID}
             postData={postData}
-            onSubmit={(formData) =>
-              postID ? editPost(formData) : submitPost(formData)
-            }
+            onSubmit={(formData) => submitPost(!!postID, formData)}
           />
         )}
       </div>

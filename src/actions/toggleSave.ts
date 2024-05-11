@@ -2,7 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server"
 
-export async function toggleFavorite(userID: string, postID: string, isFavorite: boolean) {
+export async function toggleSave(
+  userID: string,
+  postID: string,
+  isFavorite: boolean
+) {
   const supabaseClient = await createClient()
 
   if (isFavorite) {
@@ -13,14 +17,10 @@ export async function toggleFavorite(userID: string, postID: string, isFavorite:
         userID,
         postID,
       })
-
   } else {
-    const { data, error } = await supabaseClient
-      .from("savedPost")
-      .insert({
-        userID,
-        postID,
-      })
-
+    const { data, error } = await supabaseClient.from("savedPost").insert({
+      userID,
+      postID,
+    })
   }
 }

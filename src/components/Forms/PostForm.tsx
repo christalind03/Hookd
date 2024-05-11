@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
-
 import { type Error, isError } from "@/types/Error"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
@@ -62,7 +61,7 @@ const formSchema = z.object({
   yarnWeight: z.string().min(1, {
     message: "Yarn weight cannot be empty.",
   }),
-  productImage: z.instanceof(Blob, {
+  postImage: z.instanceof(Blob, {
     message: "Image cannot be empty.",
   }),
 })
@@ -79,7 +78,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
       content: postData?.content || "",
       difficulty: postData?.difficulty || "",
       yarnWeight: postData?.yarnWeight || "",
-      productImage: undefined,
+      postImage: undefined,
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -89,10 +88,11 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
     debounce(() => {
       if (!isPosted) {
         const formData = new FormData()
-        const zodData = formHook.getValues()
+        const formValues = formHook.getValues()
 
-        formData.append("postData", JSON.stringify(zodData))
-        formData.append("productImage", zodData.productImage || "")
+        for (const [formProperty, formValue] of Object.entries(formValues)) {
+          formData.append(formProperty, formValue)
+        }
 
         saveDraft(formData)
 
@@ -113,7 +113,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
           .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {
-          formHook.setValue("productImage", data)
+          formHook.setValue("postImage", data)
         }
       }
 
@@ -123,7 +123,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
           .download(`${postData.id}?burst=${Date.now()}`)
 
         if (data) {
-          formHook.setValue("productImage", data)
+          formHook.setValue("postImage", data)
         }
       }
     }
@@ -131,11 +131,12 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
     fetchImage()
   }, [])
 
-  async function handleSubmit(zodData: z.infer<typeof formSchema>) {  
+  async function handleSubmit(formValues: z.infer<typeof formSchema>) {
     const formData = new FormData()
 
-    formData.append("postData", JSON.stringify(zodData))
-    formData.append("productImage", zodData.productImage || "")
+    for (const [formProperty, formValue] of Object.entries(formValues)) {
+      formData.append(formProperty, formValue)
+    }
 
     const serverResponse = await onSubmit(formData)
 
@@ -228,7 +229,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={formHook.control}
           name="yarnWeight"
@@ -261,7 +262,7 @@ export function PostForm({ isPosted = false, postData, onSubmit }: Props) {
 
         <FormField
           control={formHook.control}
-          name="productImage"
+          name="postImage"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <div className="flex items-center justify-between">

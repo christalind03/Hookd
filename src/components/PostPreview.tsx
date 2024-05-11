@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { supabaseClient } from "@/utils/supabase/client"
 import { Badge } from "@/components/ui/Badge"
-import { toggleFavorite } from "@/actions/toggleFavorite"
+import { toggleSave } from "@/actions/toggleSave"
 
 type Props = {
   postData: Post
@@ -56,7 +56,7 @@ export function PostPreview({ postData, userID }: Props) {
 
   async function onFavorite() {
     if (userID) {
-      await toggleFavorite(userID, postData.id, isFavorite)
+      await toggleSave(userID, postData.id, isFavorite)
       setIsFavorite(!isFavorite)
     }
   }
