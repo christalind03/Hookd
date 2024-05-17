@@ -31,7 +31,7 @@ export default function Home() {
       query_offset: offset,
       query_limit: limit,
       project_difficulties: parsedParams.projectDifficulty,
-      project_types: parsedParams.projectType
+      project_types: parsedParams.projectType,
     })
 
     return data ? data : []
@@ -80,6 +80,15 @@ export default function Home() {
               }}
             />
           </div>
+
+          {(parsedParams.projectDifficulty || parsedParams.projectType) && (
+            <div
+              className="p-1 rounded-md hover:bg-accent"
+              onClick={() => router.replace("/home")}
+            >
+              <Cross1Icon />
+            </div>
+          )}
         </div>
 
         <Separator className="w-full sm:w-[525px] md:w-[625px] lg:w-[750px]" />

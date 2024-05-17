@@ -46,7 +46,7 @@ export function InfiniteFeed({ userID, refreshToken, fetchPosts }: Props) {
 
   async function loadPosts(refreshPosts: boolean) {
     setIsLoading(true)
-    setOffset((prevState) => prevState + 1)
+    setOffset((prevState) => (refreshPosts ? 0 : prevState + 1))
 
     const newPosts = await fetchPosts(offset, 25)
 
