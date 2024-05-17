@@ -29,10 +29,8 @@ export async function saveDraft(formData: FormData) {
     id: postData.id,
     title: postData.title,
     content: postData.content,
-    difficulty: postData.difficulty || "N/A",
-    postTags: postData.postTags.map(
-      ({ postTag }: { postTag: string }) => postTag
-    ),
+    projectDifficulty: postData.projectDifficulty || "N/A",
+    projectType: postData.projectType || "N/A",
     hasImage: postData.postImage instanceof File,
     creatorID: user?.id,
     lastEdit: new Date().toISOString(),

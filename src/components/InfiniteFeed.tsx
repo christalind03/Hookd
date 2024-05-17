@@ -8,12 +8,11 @@ import { Separator } from "@/components/ui/Separator"
 
 type Props = {
   userID?: string
+  refreshToken: number
   fetchPosts: (offset: number, pageCount: number) => Promise<Post[]>
 }
 
-const PAGE_COUNT = 25
-
-export function InfiniteFeed({ userID, fetchPosts }: Props) {
+export function InfiniteFeed({ userID, refreshToken, fetchPosts }: Props) {
   const feedContainer = useRef<HTMLDivElement>(null)
   const [offset, setOffset] = useState(0)
   const [loadedPosts, setLoadedPosts] = useState<Post[]>([])
@@ -33,42 +32,53 @@ export function InfiniteFeed({ userID, fetchPosts }: Props) {
   )
 
   useEffect(() => {
-    loadPosts()
+    loadPosts(true)
     window.addEventListener("scroll", debounceScroll)
 
     return () => window.removeEventListener("scroll", debounceScroll)
-  }, [])
+  }, [refreshToken])
 
   useEffect(() => {
     if (isVisible) {
-      loadPosts()
+      loadPosts(false)
     }
   }, [isVisible])
 
-  async function loadPosts() {
+  async function loadPosts(refreshPosts: boolean) {
     setIsLoading(true)
     setOffset((prevState) => prevState + 1)
 
-    const newPosts = await fetchPosts(offset, PAGE_COUNT)
-    setLoadedPosts((prevState) => [...prevState, ...newPosts])
+    const newPosts = await fetchPosts(offset, 25)
+
+    setLoadedPosts((prevState) =>
+      refreshPosts ? newPosts : [...prevState, ...newPosts]
+    )
 
     setIsLoading(false)
   }
 
   return (
     <div
-      className="flex flex-col gap-5 items-center justify-center m-5"
+      className="flex flex-col gap-3 items-center justify-center"
       ref={feedContainer}
     >
-      {loadedPosts.map((postData, postIndex) => (
-        <div
-          className="space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
-          key={postIndex}
-        >
-          {!!postIndex && <Separator />}
-          <PostPreview postData={postData} userID={userID || ""} />
+      {loadedPosts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center m-5">
+          <h3 className="font-extrabold m-5 text-3xl">Uh oh!</h3>
+          <p>We couldn't find any results matching your search.</p>
+          <p>Try searching for something else.</p>
         </div>
-      ))}
+      ) : (
+        loadedPosts.map((postData, postIndex) => (
+          <div
+            className="space-y-3 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
+            key={postIndex}
+          >
+            {!!postIndex && <Separator />}
+            <PostPreview postData={postData} userID={userID || ""} />
+          </div>
+        ))
+      )}
     </div>
   )
 }

@@ -48,8 +48,9 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/Command"
-import { postTags } from "@/constants/postTags"
+import { projectTypes } from "@/constants/projectTypes"
 import { Badge } from "@/components/ui/Badge"
+import { projectDifficulties } from "@/constants/projectDifficulties"
 
 type Props = {
   isEdit?: boolean
@@ -71,10 +72,12 @@ const formSchema = z.object({
         message: "Description cannot be empty.",
       }
     ),
-  difficulty: z.string().min(1, {
-    message: "Difficulty cannot be empty",
+  projectDifficulty: z.string().min(1, {
+    message: "Difficulty cannot be empty.",
   }),
-  postTags: z.array(z.object({ postTag: z.string() })),
+  projectType: z.string().min(1, {
+    message: "Type cannot be empty.",
+  }),
   postImage: z.instanceof(Blob, {
     message: "Image cannot be empty.",
   }),
@@ -90,20 +93,12 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
       id: postData?.id || v4(),
       title: postData?.title || "",
       content: postData?.content || "",
-      difficulty: postData?.difficulty || "",
-      postTags:
-        postData?.postTags.map((tagName) => {
-          return { postTag: tagName }
-        }) || [],
+      projectDifficulty: postData?.projectDifficulty || "",
+      projectType: postData?.projectType || "",
       postImage: undefined,
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
-  })
-
-  const tagsArray = useFieldArray({
-    name: "postTags",
-    control: formHook.control,
   })
 
   const debounceDraft = useCallback(
@@ -306,17 +301,19 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
 
         <FormField
           control={formHook.control}
-          name="difficulty"
+          name="projectDifficulty"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Difficulty</FormLabel>
+              <FormLabel>Project Difficulty</FormLabel>
               <FormMessage />
 
               <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <SelectContent>
-                  <SelectItem value="Beginner">Beginner</SelectItem>
-                  <SelectItem value="Intermediate">Intermediate</SelectItem>
-                  <SelectItem value="Advanced">Advanced</SelectItem>
+                  {projectDifficulties.map((projectDifficulty) => (
+                    <SelectItem key={projectDifficulty} value={projectDifficulty}>
+                      {projectDifficulty}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
 
                 <FormControl>
@@ -328,73 +325,33 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
             </FormItem>
           )}
         />
+        
+        <FormField
+          control={formHook.control}
+          name="projectType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Project Type</FormLabel>
+              <FormMessage />
 
-        <div className="border flex flex-col gap-3 p-4 rounded shadow">
-          <div className="flex items-center justify-between">
-            <Label>Tags</Label>
+              <Select defaultValue={field.value} onValueChange={field.onChange}>
+                <SelectContent>
+                  {projectTypes.map((projectType) => (
+                    <SelectItem key={projectType} value={projectType}>
+                      {projectType}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
 
-            <Popover>
-              <PopoverContent align="end" className="p-0">
-                <Command>
-                  <CommandInput placeholder="Search..." />
-
-                  <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
-
-                    <CommandGroup>
-                      {postTags.map((tagName, tagIndex) => {
-                        if (
-                          !tagsArray.fields.find(
-                            ({ postTag }) => postTag === tagName
-                          )
-                        ) {
-                          return (
-                            <CommandItem
-                              key={tagName}
-                              onSelect={() => {
-                                tagsArray.append({
-                                  postTag: tagName,
-                                })
-                                debounceDraft()
-                              }}
-                            >
-                              {tagName}
-                            </CommandItem>
-                          )
-                        }
-                      })}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-
-              <PopoverTrigger asChild>
-                <div className="p-1 rounded-md hover:bg-accent">
-                  <PlusIcon />
-                </div>
-              </PopoverTrigger>
-            </Popover>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            {tagsArray.fields.length === 0 ? (
-              <p className="text-sm">No tags selected.</p>
-            ) : (
-              tagsArray.fields.map(({ postTag }, fieldIndex) => (
-                <Badge
-                  key={postTag}
-                  className="hover:bg-destructive"
-                  onClick={() => {
-                    tagsArray.remove(fieldIndex)
-                    debounceDraft()
-                  }}
-                >
-                  {postTag}
-                </Badge>
-              ))
-            )}
-          </div>
-        </div>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Difficulty" />
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
+            </FormItem>
+          )}
+        />
 
         <Button className="ml-auto" type="submit">
           Submit Post

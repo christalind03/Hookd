@@ -4,7 +4,7 @@ export function toPostData(formData: FormData) {
     title: formData.get("title") as string,
     content: formData.get("content") as string,
     postImage: formData.get("postImage") as Blob,
-    difficulty: formData.get("difficulty") as string,
-    postTags: JSON.parse(formData.get("postTags") as string),
+    projectDifficulty: formData.get("projectDifficulty") as string,
+    projectType: formData.get("projectType") as string,
   }
 }

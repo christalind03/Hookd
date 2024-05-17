@@ -43,8 +43,8 @@ export function PostPreview({ postData, userID }: Props) {
       .from("posts")
       .getPublicUrl(`${postData.id}?burst=${Date.now()}`)
 
-      setImageURL(data.publicUrl)
-      fetchFavorite()
+    setImageURL(data.publicUrl)
+    fetchFavorite()
   }, [])
 
   async function onDelete() {
@@ -86,23 +86,17 @@ export function PostPreview({ postData, userID }: Props) {
         <div className="flex flex-wrap gap-3">
           <Badge
             className={
-              postData.difficulty === "Beginner"
-                ? "hover:bg-green-300 bg-green-300 text-green-700"
-                : postData.difficulty === "Intermediate"
-                ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
-                : "hover:bg-red-300 bg-red-300 text-red-700"
+              postData.projectDifficulty === "Beginner"
+                ? "bg-green-300 text-green-700"
+                : postData.projectDifficulty === "Intermediate"
+                ? "bg-yellow-300 text-yellow-700"
+                : "bg-red-300 text-red-700"
             }
           >
-            {postData.difficulty}
+            {postData.projectDifficulty}
           </Badge>
 
-          {postData.postTags.map((tagName) => (
-            <Badge
-              key={tagName}
-            >
-              {tagName}
-            </Badge>
-          ))}
+          <Badge>{postData.projectType}</Badge>
         </div>
 
         {imageURL && <img className="rounded-md" src={imageURL} />}

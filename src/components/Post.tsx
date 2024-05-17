@@ -38,7 +38,7 @@ export function Post({ postData, userID }: Props) {
     }
 
     const { data } = supabaseClient.storage
-      .from("post")
+      .from("posts")
       .getPublicUrl(postData.id)
 
     setImageURL(data.publicUrl)
@@ -79,17 +79,21 @@ export function Post({ postData, userID }: Props) {
 
           <h3 className="font-extrabold text-3xl">{postData.title}</h3>
 
-          <Badge
-            className={
-              postData.difficulty === "Beginner"
-                ? "hover:bg-green-300 bg-green-300 text-green-700"
-                : postData.difficulty === "Intermediate"
-                ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
-                : "hover:bg-red-300 bg-red-300 text-red-700"
-            }
-          >
-            {postData.difficulty}
-          </Badge>
+          <div className="flex flex-wrap gap-3">
+            <Badge
+              className={
+                postData.projectDifficulty === "Beginner"
+                  ? "hover:bg-green-300 bg-green-300 text-green-700"
+                  : postData.projectDifficulty === "Intermediate"
+                  ? "hover:bg-yellow-300 bg-yellow-300 text-yellow-700"
+                  : "hover:bg-red-300 bg-red-300 text-red-700"
+              }
+            >
+              {postData.projectDifficulty}
+            </Badge>
+
+            <Badge>{postData.projectType}</Badge>
+          </div>
 
           {imageURL && <img className="rounded-md" src={imageURL} />}
           <div dangerouslySetInnerHTML={{ __html: postData.content }} />

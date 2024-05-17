@@ -6,7 +6,7 @@ export async function deleteDraft(id: string) {
   const supabaseClient = await createClient()
 
   await supabaseClient.storage
-    .from("draft")
+    .from("drafts")
     .remove([`${id}`])
   
   await supabaseClient

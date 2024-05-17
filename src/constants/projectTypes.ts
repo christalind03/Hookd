@@ -1,4 +1,4 @@
-export const postTags = [
+export const projectTypes = [
   "Afghans & Blankets",
   "Amigurumi",
   "Other",

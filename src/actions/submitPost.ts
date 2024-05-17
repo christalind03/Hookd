@@ -35,10 +35,8 @@ export async function submitPost(isEdit: boolean, formData: FormData) {
     id: postData.id,
     title: postData.title,
     content: postData.content,
-    difficulty: postData.difficulty,
-    postTags: postData.postTags.map(
-      ({ postTag }: { postTag: string }) => postTag
-    ),
+    projectDifficulty: postData.projectDifficulty,
+    projectType: postData.projectType,
     creatorID: user?.id,
   })
 
