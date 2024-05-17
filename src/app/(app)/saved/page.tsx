@@ -1,6 +1,6 @@
 "use client"
 
-import { InfiniteFeed } from "@/components/InfiniteFeed"
+import { InfiniteFeed } from "@/components/Feed/InfiniteFeed"
 import { useUser } from "@/components/UserProvider"
 import { supabaseClient } from "@/utils/supabase/client"
 

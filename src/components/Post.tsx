@@ -62,7 +62,7 @@ export function Post({ postData, userID }: Props) {
   if (isActive) {
     return (
       <div className="flex items-center justify-center m-5">
-        <div className="space-y-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[750px]">
+        <div className="space-y-5 w-96 sm:w-[525px] md:w-[625px] lg:w-[725px]">
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground text-[10px]">
               {convertTimestamp(postData.creationTimestamp)}

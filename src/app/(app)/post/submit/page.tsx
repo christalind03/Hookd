@@ -50,7 +50,7 @@ export default function SubmitPost() {
   if (supabaseUser) {
     return (
       <div className="flex flex-col gap-5 items-center justify-center m-5">
-        <div className="flex items-center justify-center w-full sm:w-[525px] md:w-[625px] lg:w-[750px]">
+        <div className="flex items-center justify-center w-full sm:w-[525px] md:w-[625px] lg:w-[725px]">
           <h3 className="absolute font-extrabold text-3xl">Submit Post</h3>
 
           <div className="ml-auto">

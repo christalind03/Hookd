@@ -11,7 +11,7 @@ import { Cross1Icon } from "@radix-ui/react-icons"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function Home() {
+export default function Results() {
   const router = useRouter()
   const supabaseUser = useUser()
   const searchParams = useSearchParams()
@@ -20,6 +20,7 @@ export default function Home() {
   const parsedParams = {
     projectDifficulty: searchParams.get("projectDifficulty")?.split("|"),
     projectType: searchParams.get("projectType")?.split("|"),
+    searchQuery: searchParams.get("searchQuery"),
   }
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function Home() {
       query_limit: limit,
       project_difficulties: parsedParams.projectDifficulty,
       project_types: parsedParams.projectType,
+      search_query: parsedParams.searchQuery?.replaceAll(" ", "+"),
     })
 
     return data ? data : []
@@ -59,12 +61,20 @@ export default function Home() {
       )
     }
 
-    router.replace(`/home?${searchParams.join("&")}`)
+    if (parsedParams.searchQuery) {
+      searchParams.push(
+        `${encodeURIComponent("projectType")}=${encodeURIComponent(
+          parsedParams.searchQuery
+        )}`
+      )
+    }
+
+    router.replace(`/results?${searchParams.join("&")}`)
   }
 
   return (
     <div className="flex flex-col items-center justify-center m-5">
-      <div className="flex flex-col gap-3 w-full sm:w-[525px] md:w-[625px] lg:w-[725px]">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex gap-3 items-center">
             <FeedFilter
@@ -98,7 +108,7 @@ export default function Home() {
           )}
         </div>
 
-        <Separator />
+        <Separator className="w-full sm:w-[525px] md:w-[625px] lg:w-[725px]" />
 
         <InfiniteFeed
           userID={supabaseUser?.id}

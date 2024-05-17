@@ -181,7 +181,7 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[750px]"
+        className="flex flex-col space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[725px]"
         onChange={() => debounceDraft()}
         onSubmit={(formData) => formHook.handleSubmit(handleSubmit)(formData)}
       >
