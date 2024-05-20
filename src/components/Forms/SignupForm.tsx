@@ -13,29 +13,39 @@ import {
 import { Input } from "@/components/ui/Input"
 
 import { type Error, isError } from "@/types/Error"
-import { logIn } from "@/actions/logIn"
+import { signUp } from "@/actions/signUp"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import Link from "next/link"
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email address.",
-  }),
-  password: z.string().min(1, {
-    message: "Password cannot be empty.",
-  }),
-})
+const formSchema = z
+  .object({
+    email: z.string().email({
+      message: "Invalid email address.",
+    }),
+    username: z.string().min(3, {
+      message: "Username must have a minimum of 3 characters.",
+    }),
+    password: z.string().min(6, {
+      message: "Password must have a minimum of 6 characters.",
+    }),
+    confirmPassword: z.string(),
+  })
+  .refine((formValues) => formValues.password === formValues.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  })
 
-export function LoginForm() {
+export function SignupForm() {
   const [error, setError] = useState<Error>()
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       email: "",
+      username: "",
       password: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(formSchema),
   })
@@ -49,7 +59,7 @@ export function LoginForm() {
       formData.append(formProperty, formValue)
     }
 
-    const serverResponse = await logIn(formData)
+    const serverResponse = await signUp(formData)
 
     if (isError(serverResponse)) {
       setError(serverResponse)
@@ -87,31 +97,55 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+        
+        <FormField
+          control={formHook.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Username" {...field} />
+              </FormControl>
+
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={formHook.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem>
               <FormControl>
                 <Input placeholder="Password" type="password" {...field} />
               </FormControl>
 
-              <div className="flex items-center justify-between">
-                <FormMessage className="text-xs" />
-                <Link
-                  className="ml-auto text-xs hover:text-blue-500 hover:underline"
-                  href="/forgot-password"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={formHook.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  placeholder="Confirm Password"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage className="text-xs"/>
             </FormItem>
           )}
         />
 
         <Button className="mt-3" type="submit">
-          Log In
+          Sign Up
         </Button>
       </form>
     </Form>

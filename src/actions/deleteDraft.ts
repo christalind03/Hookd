@@ -10,7 +10,7 @@ export async function deleteDraft(id: string) {
     .remove([`${id}`])
   
   await supabaseClient
-    .from("draft")
+    .from("drafts")
     .delete()
     .match({
       id,

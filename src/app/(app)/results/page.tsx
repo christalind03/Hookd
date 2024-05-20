@@ -28,12 +28,12 @@ export default function Results() {
   }, [searchParams.toString()])
 
   async function fetchPosts(offset: number, limit: number) {
-    const { data, error } = await supabaseClient.rpc("generate_feed", {
-      query_offset: offset,
-      query_limit: limit,
-      project_difficulties: parsedParams.projectDifficulty,
-      project_types: parsedParams.projectType,
-      search_query: parsedParams.searchQuery?.replaceAll(" ", "+"),
+    const { data, error } = await supabaseClient.rpc("filterPosts", {
+      queryOffset: offset,
+      queryLimit: limit,
+      projectDifficulties: parsedParams.projectDifficulty,
+      projectTypes: parsedParams.projectType,
+      searchQuery: parsedParams.searchQuery?.replaceAll(" ", "+"),
     })
 
     return data ? data : []

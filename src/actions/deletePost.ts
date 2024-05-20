@@ -10,7 +10,7 @@ export async function deletePost(id: string) {
     .remove([`${id}`])
   
   await supabaseClient
-    .from("post")
+    .from("posts")
     .delete()
     .match({
       id,

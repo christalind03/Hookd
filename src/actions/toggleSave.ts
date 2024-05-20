@@ -11,14 +11,14 @@ export async function toggleSave(
 
   if (isFavorite) {
     const { data, error } = await supabaseClient
-      .from("savedPost")
+      .from("savedPosts")
       .delete()
       .match({
         userID,
         postID,
       })
   } else {
-    const { data, error } = await supabaseClient.from("savedPost").insert({
+    const { data, error } = await supabaseClient.from("savedPosts").insert({
       userID,
       postID,
     })

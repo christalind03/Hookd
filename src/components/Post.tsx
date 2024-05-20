@@ -23,7 +23,7 @@ export function Post({ postData, userID }: Props) {
     async function fetchFavorite() {
       if (userID) {
         const { data, error } = await supabaseClient
-          .from("savedPost")
+          .from("savedPosts")
           .select("*")
           .match({
             userID,

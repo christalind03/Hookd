@@ -12,7 +12,7 @@ export default function Saved() {
     const to = from + pageCount - 1
 
     const { data, error } = await supabaseClient
-      .from("savedPost")
+      .from("savedPosts")
       .select("post(*)")
       .match({
         userID: supabaseUser?.id,

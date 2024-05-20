@@ -27,12 +27,15 @@ export default function Home() {
   }, [searchParams.toString()])
 
   async function fetchPosts(offset: number, limit: number) {
-    const { data, error } = await supabaseClient.rpc("generate_feed", {
-      query_offset: offset,
-      query_limit: limit,
-      project_difficulties: parsedParams.projectDifficulty,
-      project_types: parsedParams.projectType,
+    const { data, error } = await supabaseClient.rpc("filterPosts", {
+      queryOffset: offset,
+      queryLimit: limit,
+      projectDifficulties: parsedParams.projectDifficulty,
+      projectTypes: parsedParams.projectType,
     })
+
+    console.log("RPC Data: ", data)
+    console.log("RPC Error: ", error)
 
     return data ? data : []
   }

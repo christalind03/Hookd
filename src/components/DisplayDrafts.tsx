@@ -29,7 +29,7 @@ export function DisplayDrafts() {
   useEffect(() => {
     async function fetchDrafts() {
       const { data, error } = await supabaseClient
-        .from("draft")
+        .from("drafts")
         .select("*")
         .match({
           creatorID: supabaseUser?.id,

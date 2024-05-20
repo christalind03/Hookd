@@ -25,7 +25,7 @@ export async function saveDraft(formData: FormData) {
     data: { user },
   } = await supabaseClient.auth.getUser()
 
-  const { data, error } = await supabaseClient.from("draft").upsert({
+  const { data, error } = await supabaseClient.from("drafts").upsert({
     id: postData.id,
     title: postData.title,
     content: postData.content,

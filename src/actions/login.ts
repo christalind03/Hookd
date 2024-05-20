@@ -2,16 +2,14 @@
 
 import { createClient } from "@/utils/supabase/server"
 
-type FormData = {
-  email: string
-  password: string
-}
-
 export async function logIn(formData: FormData) {
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
   const supabaseClient = await createClient()
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
-    ...formData,
+    email,
+    password,
   })
 
   if (error) {

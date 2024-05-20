@@ -31,7 +31,7 @@ export async function submitPost(isEdit: boolean, formData: FormData) {
     data: { user },
   } = await supabaseClient.auth.getUser()
 
-  const { data, error } = await supabaseClient.from("post").upsert({
+  const { data, error } = await supabaseClient.from("posts").upsert({
     id: postData.id,
     title: postData.title,
     content: postData.content,
