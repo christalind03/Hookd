@@ -134,8 +134,6 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
         if (data) {
           formHook.setValue("postImage", data)
         }
-
-        console.log(data, error)
       }
 
       if (isPost(postData)) {
@@ -146,8 +144,6 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
         if (data) {
           formHook.setValue("postImage", data)
         }
-
-        console.log(data, error)
       }
     }
 

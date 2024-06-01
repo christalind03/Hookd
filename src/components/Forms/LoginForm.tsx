@@ -101,7 +101,7 @@ export function LoginForm() {
                 <FormMessage className="text-xs" />
                 <Link
                   className="ml-auto text-xs hover:text-blue-500 hover:underline"
-                  href="/forgot-password"
+                  href="/account/forgot-password"
                 >
                   Forgot Password?
                 </Link>

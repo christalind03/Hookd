@@ -34,9 +34,6 @@ export default function Home() {
       projectTypes: parsedParams.projectType,
     })
 
-    console.log("RPC Data: ", data)
-    console.log("RPC Error: ", error)
-
     return data ? data : []
   }
 
