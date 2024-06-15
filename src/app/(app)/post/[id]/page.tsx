@@ -1,5 +1,5 @@
-import { Post } from "@/components/Post"
 import { createClient } from "@/utils/supabase/server"
+import { Post } from "@/components/App/Post/Post"
 
 type Props = {
   params: {
@@ -22,5 +22,5 @@ export default async function PostID({ params: { id } }: Props) {
     })
     .single()
 
-  return <Post postData={data} userID={user?.id || ""} />
+  return <Post postData={data} userID={user?.id} />
 }

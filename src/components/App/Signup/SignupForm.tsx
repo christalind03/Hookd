@@ -1,8 +1,17 @@
 "use client"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert"
+// Business Logic
+import { type Error, isError } from "@/types/Error"
+import { signUp } from "@/actions/authActions"
+import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+// UI Components
 import { Button } from "@/components/ui/Button"
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
+import { DisplayError } from "@/components/DisplayError"
 import {
   Form,
   FormControl,
@@ -11,14 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
-
-import { type Error, isError } from "@/types/Error"
-import { signUp } from "@/actions/signUp"
-import { useForm } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 
 const formSchema = z
   .object({
@@ -75,14 +76,7 @@ export function SignupForm() {
         className="flex flex-col gap-3 max-w-96 w-full"
         onSubmit={formHook.handleSubmit(onSubmit)}
       >
-        {error && (
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon />
-
-            <AlertTitle>Error {error.status}</AlertTitle>
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
-        )}
+        {error && <DisplayError error={error} />}
 
         <FormField
           control={formHook.control}
@@ -97,7 +91,7 @@ export function SignupForm() {
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={formHook.control}
           name="username"
@@ -139,7 +133,7 @@ export function SignupForm() {
                 />
               </FormControl>
 
-              <FormMessage className="text-xs"/>
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />

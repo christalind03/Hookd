@@ -1,5 +1,15 @@
 "use client"
 
+// Business Logic
+import { type Draft } from "@/types/Draft"
+import { calculateElapsedTime } from "@/utils/calculateElapsedTime"
+import { deleteDraft } from "@/actions/draftActions"
+import { supabaseClient } from "@/utils/supabase/client"
+import { useEffect, useState } from "react"
+import { useUser } from "@/components/UserProvider"
+import { useRouter } from "next/navigation"
+
+// UI Components
 import { Button } from "@/components/ui/Button"
 import {
   Dialog,
@@ -9,15 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/Dialog"
 import { TrashIcon } from "@radix-ui/react-icons"
-
-import { deleteDraft } from "@/actions/deleteDraft"
-import { supabaseClient } from "@/utils/supabase/client"
-import { useEffect, useState } from "react"
-import { useUser } from "@/components/UserProvider"
-import { type Draft } from "@/types/Draft"
-import { calculateElapsedTime } from "@/utils/calculateElapsedTime"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
 
 export function DisplayDrafts() {
   const router = useRouter()

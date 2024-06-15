@@ -1,23 +1,27 @@
 "use client"
 
+// Business Logic
+import { type Post } from "@/types/Post"
 import debounce from "lodash.debounce"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { type Post } from "@/types/Post"
-import { PostPreview } from "@/components/PostPreview"
+import { useUser } from "@/components/UserProvider"
+
+// UI Components
+import { PostPreview } from "@/components/App/Post/PostPreview"
 import { Separator } from "@/components/ui/Separator"
 
 type Props = {
-  userID?: string
   refreshToken: number
-  fetchPosts: (offset: number, pageCount: number) => Promise<Post[]>
+  filterPosts: (limit: number, offset: number) => Promise<Post[]>
 }
 
-export function InfiniteFeed({ userID, refreshToken, fetchPosts }: Props) {
-  const feedContainer = useRef<HTMLDivElement>(null)
-  const [offset, setOffset] = useState(0)
+export function InfiniteFeed({ refreshToken, filterPosts }: Props) {
+  const [offset, setOffset] = useState<number>(0)
   const [loadedPosts, setLoadedPosts] = useState<Post[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isVisible, setIsVisible] = useState<boolean>(false)
+  const feedContainer = useRef<HTMLDivElement>(null)
+  const supabaseUser = useUser()
 
   const debounceScroll = useCallback(
     debounce(() => {
@@ -46,9 +50,15 @@ export function InfiniteFeed({ userID, refreshToken, fetchPosts }: Props) {
 
   async function loadPosts(refreshPosts: boolean) {
     setIsLoading(true)
-    setOffset((prevState) => (refreshPosts ? 0 : prevState + 1))
+    setOffset((prevState) => {
+      if (refreshPosts) {
+        return 0
+      }
 
-    const newPosts = await fetchPosts(offset, 25)
+      return prevState + 1
+    })
+
+    const newPosts = await filterPosts(25, offset)
 
     setLoadedPosts((prevState) =>
       refreshPosts ? newPosts : [...prevState, ...newPosts]
@@ -70,12 +80,9 @@ export function InfiniteFeed({ userID, refreshToken, fetchPosts }: Props) {
         </div>
       ) : (
         loadedPosts.map((postData, postIndex) => (
-          <div
-            className="space-y-3 w-full"
-            key={postIndex}
-          >
+          <div className="space-y-3 w-full" key={postIndex}>
             {!!postIndex && <Separator />}
-            <PostPreview postData={postData} userID={userID || ""} />
+            <PostPreview postData={postData} userID={supabaseUser?.id || ""} />
           </div>
         ))
       )}

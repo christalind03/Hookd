@@ -1,6 +1,12 @@
 "use client"
 
+// Business Logic
 import { type Editor } from "@tiptap/react"
+import { useEffect, useState } from "react"
+
+// UI Components
+import { AlignText } from "@/components/Editor/Buttons/AlignText"
+import { ColorPicker } from "@/components/Editor/Buttons/ColorPicker"
 import {
   FontBoldIcon,
   FontItalicIcon,
@@ -8,17 +14,14 @@ import {
   HeadingIcon,
   ListBulletIcon,
 } from "@radix-ui/react-icons"
+import { InsertLink } from "@/components/Editor/Buttons/InsertLink"
 import { Toggle } from "@/components/ui/Toggle"
-import { ColorPicker } from "@/components/ColorPicker"
-import { useEffect, useState } from "react"
-import { InsertLink } from "@/components/TextEditor/InsertLink"
-import { AlignText } from "@/components/TextEditor/AlignText"
 
 type Props = {
   editor: Editor | null
 }
 
-export function Toolbar({ editor }: Props) {
+export function EditorToolbar({ editor }: Props) {
   const [textAlignment, setTextAlignment] = useState("left")
   const [textColor, setTextColor] = useState("#000000")
 

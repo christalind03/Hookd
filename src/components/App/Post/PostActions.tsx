@@ -1,5 +1,10 @@
 "use client"
 
+// Business Logic
+import { useToast } from "@/components/ui/useToast"
+import { useRouter } from "next/navigation"
+
+// UI Components
 import {
   DotsHorizontalIcon,
   BookmarkFilledIcon,
@@ -12,18 +17,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
-import { IconLabel } from "@/components/IconLabel"
 import { Fragment } from "react"
+import { IconButton } from "@/components/IconButton"
 import { Link2Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
-import { useRouter } from "next/navigation"
-import { useToast } from "@/components/ui/useToast"
 
 type Props = {
   postID: string
   isAuthor: boolean
   isFavorite: boolean
   onDelete: () => void
-  onFavorite: () => void
+  onSave: () => void
 }
 
 export function PostActions({
@@ -31,7 +34,7 @@ export function PostActions({
   isAuthor,
   isFavorite,
   onDelete,
-  onFavorite,
+  onSave,
 }: Props) {
   const router = useRouter()
   const { toast } = useToast()
@@ -54,7 +57,7 @@ export function PostActions({
             })
           }}
         >
-          <IconLabel text="Copy Link" icon={<Link2Icon />} />
+          <IconButton text="Copy Link" icon={<Link2Icon />} />
         </DropdownMenuItem>
 
         <DropdownMenuItem
@@ -62,10 +65,10 @@ export function PostActions({
             event.preventDefault()
             event.stopPropagation()
 
-            onFavorite()
+            onSave()
           }}
         >
-          <IconLabel
+          <IconButton
             text="Save"
             icon={
               isFavorite ? (
@@ -89,7 +92,7 @@ export function PostActions({
                 router.push(`/post/submit?edit=${postID}`)
               }}
             >
-              <IconLabel text="Edit Post" icon={<Pencil1Icon />} />
+              <IconButton text="Edit Post" icon={<Pencil1Icon />} />
             </DropdownMenuItem>
 
             <DropdownMenuItem
@@ -100,7 +103,7 @@ export function PostActions({
                 onDelete()
               }}
             >
-              <IconLabel
+              <IconButton
                 text="Delete Post"
                 icon={<TrashIcon />}
                 isDestructive

@@ -1,12 +1,12 @@
 "use client"
 
+import { Input } from "@/components/ui/Input"
+import { OpacityIcon } from "@radix-ui/react-icons"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover"
-import { Input } from "@/components/ui/Input"
-import { OpacityIcon } from "@radix-ui/react-icons"
 
 type Props = {
   value: string

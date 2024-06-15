@@ -1,6 +1,9 @@
-import { NavBar } from "@/components/NavBar/NavBar"
-import { UserProvider } from "@/components/UserProvider"
+// Business Logic
 import { createClient } from "@/utils/supabase/server"
+import { UserProvider } from "@/components/UserProvider"
+
+// UI Components
+import { NavBar } from "@/components/NavBar/NavBar"
 import { Toaster } from "@/components/ui/Toaster"
 
 export default async function AppLayout({
@@ -25,7 +28,11 @@ export default async function AppLayout({
       <NavBar />
       <Toaster />
 
-      <main>{children}</main>
+      <main className="flex items-center justify-center m-5">
+        <div className="flex flex-col gap-3 w-full sm:w-[525px] md:w-[625px] lg:w-[725px]">
+          {children}
+        </div>
+      </main>
     </UserProvider>
   )
 }

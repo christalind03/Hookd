@@ -1,17 +1,21 @@
 "use client"
 
-import { Button } from "@/components/ui/Button"
-import { UserAvatar } from "@/components/NavBar/UserAvatar"
-import { useUser, useUserRole } from "@/components/UserProvider"
-import { MagnifyingGlassIcon, Pencil2Icon } from "@radix-ui/react-icons"
-import Link from "next/link"
-import { Input } from "@/components/ui/Input"
+// Business Logic
 import { useForm } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/Form"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useUser, useUserRole } from "@/components/UserProvider"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { Fragment, useState } from "react"
+
+// UI Components
+import { Button } from "@/components/ui/Button"
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/Form"
+import { Fragment } from "react"
+import { Input } from "@/components/ui/Input"
+import Link from "next/link"
+import { MagnifyingGlassIcon, Pencil2Icon } from "@radix-ui/react-icons"
+import { UserAvatar } from "@/components/NavBar/UserAvatar"
 
 const formSchema = z.object({
   searchQuery: z.string(),

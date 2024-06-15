@@ -1,6 +1,14 @@
 "use client"
 
+// Business Logic
+import { type User } from "@supabase/supabase-js"
+import { logOut } from "@/actions/authActions"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+
+// UI Components
 import { Avatar, AvatarFallback } from "@/components/ui/Avatar"
+import { BookmarkIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,16 +17,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
-import { BookmarkIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons"
-import { IconLabel } from "@/components/IconLabel"
-import { useState } from "react"
-
-import { logOut } from "@/actions/logOut"
-import { useRouter } from "next/navigation"
-import { type User } from "@supabase/supabase-js"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet"
+import { IconButton } from "@/components/IconButton"
 import Link from "next/link"
 import { Separator } from "../ui/Separator"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet"
 
 type Props = {
   supabaseUser: User
@@ -82,7 +84,7 @@ export function UserAvatar({ supabaseUser }: Props) {
               ))}
 
               <div onClick={() => signOut()}>
-                <IconLabel text="Log Out" icon={<ExitIcon />} isDestructive />
+                <IconButton text="Log Out" icon={<ExitIcon />} isDestructive />
               </div>
             </div>
           </SheetContent>
@@ -122,7 +124,7 @@ export function UserAvatar({ supabaseUser }: Props) {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem onClick={() => signOut()}>
-              <IconLabel text="Log Out" icon={<ExitIcon />} isDestructive />
+              <IconButton text="Log Out" icon={<ExitIcon />} isDestructive />
             </DropdownMenuItem>
           </DropdownMenuContent>
 

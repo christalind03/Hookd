@@ -1,11 +1,9 @@
 "use client"
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/Popover"
-import { CaretDownIcon, CheckIcon } from "@radix-ui/react-icons"
+// Business Logic
+// ...
+
+// UI Components
 import {
   Command,
   CommandEmpty,
@@ -14,6 +12,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/Command"
+import { CaretDownIcon, CheckIcon } from "@radix-ui/react-icons"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover"
 
 type Props = {
   filterName: string
@@ -22,7 +26,7 @@ type Props = {
   onSelect: (selectedOptions: string[]) => void
 }
 
-export function FeedFilter({
+export function FilterOption({
   filterName,
   optionList,
   selectedOptions,

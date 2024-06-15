@@ -1,21 +1,24 @@
 "use client"
 
-import StarterKit from "@tiptap/starter-kit"
-import Underline from "@tiptap/extension-underline"
-import TextStyle from "@tiptap/extension-text-style"
+// Business Logic
 import Color from "@tiptap/extension-color"
 import Link from "@tiptap/extension-link"
+import StarterKit from "@tiptap/starter-kit"
 import TextAlign from "@tiptap/extension-text-align"
+import TextStyle from "@tiptap/extension-text-style"
 import Typography from "@tiptap/extension-typography"
+import Underline from "@tiptap/extension-underline"
 import { useEditor, EditorContent } from "@tiptap/react"
-import { Toolbar } from "@/components/TextEditor/Toolbar"
+
+// UI Components
+import { EditorToolbar } from "@/components/Editor/EditorToolbar"
 
 type Props = {
   content: string
   onChange: (richText: string) => void
 }
 
-export function TextEditor({ content, onChange }: Props) {
+export function Editor({ content, onChange }: Props) {
   const textEditor = useEditor({
     content: content,
     editorProps: {
@@ -70,7 +73,7 @@ export function TextEditor({ content, onChange }: Props) {
 
   return (
     <div className="space-y-3">
-      <Toolbar editor={textEditor} />
+      <EditorToolbar editor={textEditor} />
       <EditorContent editor={textEditor} />
     </div>
   )

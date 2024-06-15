@@ -1,8 +1,25 @@
 "use client"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert"
+// Business Logic
+import { type Error, isError } from "@/types/Error"
+import { type Draft, isDraft } from "@/types/Draft"
+import { type Post, isPost } from "@/types/Post"
+import debounce from "lodash.debounce"
+import { projectDifficulties } from "@/constants/projectDifficulties"
+import { projectTypes } from "@/constants/projectTypes"
+import { saveDraft } from "@/actions/draftActions"
+import { supabaseClient } from "@/utils/supabase/client"
+import { useCallback, useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/useToast"
+import { v4 } from "uuid"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+// UI Components
 import { Button } from "@/components/ui/Button"
-import { ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
+import { DisplayError } from "@/components/DisplayError"
 import {
   Form,
   FormControl,
@@ -12,20 +29,6 @@ import {
   FormMessage,
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
-import { type Error, isError } from "@/types/Error"
-import { useFieldArray, useForm } from "react-hook-form"
-import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { TextEditor } from "@/components/TextEditor/TextEditor"
-import { supabaseClient } from "@/utils/supabase/client"
-import { type Post, isPost } from "@/types/Post"
-import { UploadIcon } from "@radix-ui/react-icons"
-import { v4 } from "uuid"
-import debounce from "lodash.debounce"
-import { saveDraft } from "@/actions/saveDraft"
-import { type Draft, isDraft } from "@/types/Draft"
 import {
   Select,
   SelectContent,
@@ -33,24 +36,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
-import { useToast } from "@/components/ui/useToast"
-import { Label } from "../ui/Label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/Popover"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/Command"
-import { projectTypes } from "@/constants/projectTypes"
-import { Badge } from "@/components/ui/Badge"
-import { projectDifficulties } from "@/constants/projectDifficulties"
+import { Editor } from "@/components/Editor/Editor"
+import { UploadIcon } from "@radix-ui/react-icons"
 
 type Props = {
   isEdit?: boolean
@@ -83,8 +70,8 @@ const formSchema = z.object({
   }),
 })
 
-export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
-  const router = useRouter()
+export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
+  const appRouter = useRouter()
   const { toast } = useToast()
   const [error, setError] = useState<Error>()
 
@@ -166,7 +153,7 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
       return
     }
 
-    router.push("/home")
+    appRouter.push("/home")
     return
   }
 
@@ -181,14 +168,7 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
         onChange={() => debounceDraft()}
         onSubmit={(formData) => formHook.handleSubmit(handleSubmit)(formData)}
       >
-        {error && (
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon />
-
-            <AlertTitle>Error {error.status}</AlertTitle>
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
-        )}
+        {error && <DisplayError error={error} />}
 
         <FormField
           control={formHook.control}
@@ -214,7 +194,7 @@ export function PostForm({ isEdit = false, postData, onSubmit }: Props) {
               <FormMessage />
 
               <FormControl>
-                <TextEditor
+                <Editor
                   content={field.value}
                   onChange={(editorContent) => {
                     field.onChange(editorContent)

@@ -1,13 +1,15 @@
 "use client"
 
-import { PostActions } from "@/components/PostActions"
+// Business Logic
 import { type Post } from "@/types/Post"
 import { convertTimestamp } from "@/utils/convertTimestamp"
-import { deletePost } from "@/actions/deletePost"
-import { useEffect, useState } from "react"
+import { deletePost, savePost } from "@/actions/postActions"
 import { supabaseClient } from "@/utils/supabase/client"
+import { useEffect, useState } from "react"
+
+// UI Components
 import { Badge } from "@/components/ui/Badge"
-import { toggleSave } from "@/actions/toggleSave"
+import { PostActions } from "@/components/App/Post/PostActions"
 
 type Props = {
   postData: Post
@@ -15,9 +17,9 @@ type Props = {
 }
 
 export function Post({ postData, userID }: Props) {
-  const [imageURL, setImageURL] = useState("")
-  const [isActive, setIsActive] = useState(true)
-  const [isFavorite, setIsFavorite] = useState(false)
+  const [imageURL, setImageURL] = useState<string>("")
+  const [isActive, setIsActive] = useState<boolean>(true)
+  const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
   useEffect(() => {
     async function fetchFavorite() {
@@ -52,9 +54,9 @@ export function Post({ postData, userID }: Props) {
     }
   }
 
-  async function onFavorite() {
+  async function onSave() {
     if (userID) {
-      await toggleSave(userID, postData.id, isFavorite)
+      await savePost(userID, postData.id, isFavorite)
       setIsFavorite(!isFavorite)
     }
   }
@@ -73,7 +75,7 @@ export function Post({ postData, userID }: Props) {
               isAuthor={postData.creatorID === userID}
               isFavorite={isFavorite}
               onDelete={() => onDelete()}
-              onFavorite={() => onFavorite()}
+              onSave={() => onSave()}
             />
           </div>
 

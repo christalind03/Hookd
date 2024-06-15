@@ -1,22 +1,23 @@
 "use client"
 
+// Business Logic
 import { type Post } from "@/types/Post"
-import { PostActions } from "@/components/PostActions"
 import { convertTimestamp } from "@/utils/convertTimestamp"
-
-import { deletePost } from "@/actions/deletePost"
-import { useEffect, useState } from "react"
-import Link from "next/link"
+import { deletePost, savePost } from "@/actions/postActions"
 import { supabaseClient } from "@/utils/supabase/client"
+import { useEffect, useState } from "react"
+
+// UI Components
 import { Badge } from "@/components/ui/Badge"
-import { toggleSave } from "@/actions/toggleSave"
+import Link from "next/link"
+import { PostActions } from "@/components/App/Post/PostActions"
 
 type Props = {
   postData: Post
-  userID?: string
+  userID: string
 }
 
-export function PostPreview({ postData, userID }: Props) {
+export function PostPreview({ postData, userID = "" }: Props) {
   const [imageURL, setImageURL] = useState("")
   const [isActive, setIsActive] = useState(true)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -54,9 +55,9 @@ export function PostPreview({ postData, userID }: Props) {
     }
   }
 
-  async function onFavorite() {
+  async function onSave() {
     if (userID) {
-      await toggleSave(userID, postData.id, isFavorite)
+      await savePost(userID, postData.id, isFavorite)
       setIsFavorite(!isFavorite)
     }
   }
@@ -77,7 +78,7 @@ export function PostPreview({ postData, userID }: Props) {
             isAuthor={postData.creatorID === userID}
             isFavorite={isFavorite}
             onDelete={() => onDelete()}
-            onFavorite={() => onFavorite()}
+            onSave={() => onSave()}
           />
         </div>
 

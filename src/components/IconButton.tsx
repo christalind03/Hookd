@@ -4,7 +4,7 @@ type Props = {
   isDestructive?: boolean
 }
 
-export function IconLabel({ text, icon, isDestructive }: Props) {
+export function IconButton({ text, icon, isDestructive }: Props) {
   return (
     <div
       className={`flex items-center space-x-3 text-sm ${
