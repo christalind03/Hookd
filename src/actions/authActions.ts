@@ -49,7 +49,9 @@ export async function requestResetPassword(emailAddress: string) {
   const { data, error } = await supabaseClient.auth.resetPasswordForEmail(
     emailAddress,
     {
-      redirectTo: `${headersList.get("Origin")}/account/verify?action=reset-password&`,
+      redirectTo: `${headersList.get(
+        "Origin"
+      )}/account/verify?action=reset-password&`,
     }
   )
 
@@ -65,10 +67,10 @@ export async function signUp(formData: FormData) {
   const email = formData.get("email") as string
   const username = formData.get("username") as string
   const password = formData.get("password") as string
-  const supabaseClient = await createClient()
 
   // If the username is available, attempt to create a new account.
   if (await isUsernameAvailable(username)) {
+    const supabaseClient = await createClient()
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
@@ -88,6 +90,37 @@ export async function signUp(formData: FormData) {
     if (error) {
       return {
         status: error.status?.toString(),
+        message: error.message,
+      }
+    }
+  } else {
+    return {
+      status: "404",
+      message: "Username already taken.",
+    }
+  }
+}
+
+export async function updateProfile(userID: string, formData: FormData) {
+  const username = formData.get("username") as string
+  const biography = formData.get("biography") as string
+
+  // If the username is available, update the user's profile information.
+  if (await isUsernameAvailable(username)) {
+    const supabaseClient = await createClient()
+    const { data, error } = await supabaseClient
+      .from("userProfiles")
+      .update({
+        username,
+        biography,
+      })
+      .match({
+        id: userID,
+      })
+
+    if (error) {
+      return {
+        status: error.code,
         message: error.message,
       }
     }

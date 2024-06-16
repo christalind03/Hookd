@@ -48,6 +48,7 @@ export function SignupForm() {
       password: "",
       confirmPassword: "",
     },
+    mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 

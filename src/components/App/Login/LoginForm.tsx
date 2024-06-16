@@ -38,6 +38,7 @@ export function LoginForm() {
       email: "",
       password: "",
     },
+    mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 
