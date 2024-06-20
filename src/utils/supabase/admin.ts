@@ -8,7 +8,7 @@ export async function createAdmin() {
 
   const supabaseClient = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ADMIN_KEY!,
+    process.env.NEXT_SECRET_SUPABASE_ADMIN_KEY!,
     {
       cookies: {
         get(name: string) {
