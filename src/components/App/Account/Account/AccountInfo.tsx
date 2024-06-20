@@ -7,6 +7,7 @@ import { useUser } from "@/components/UserProvider"
 // UI Components
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
+import { Label } from "@/components/ui/Label"
 import { Separator } from "@/components/ui/Separator"
 
 export function AccountInfo() {
@@ -22,7 +23,7 @@ export function AccountInfo() {
 
       <div className="flex flex-col gap-3">
         <div className="grid grid-cols-3 items-center text-sm">
-          <label>Email</label>
+          <Label>Email</Label>
           <Input
             className="col-span-2"
             placeholder={supabaseUser?.email}
@@ -31,7 +32,7 @@ export function AccountInfo() {
         </div>
 
         <div className="grid grid-cols-3 items-center text-sm">
-          <label>Password</label>
+          <Label>Password</Label>
           <Button
             onClick={() => appRouter.push("/account/reset-password")}
             variant="secondary"

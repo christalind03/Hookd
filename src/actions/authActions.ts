@@ -1,7 +1,29 @@
 "use server"
 
+import { createAdmin } from "@/utils/supabase/admin"
 import { createClient } from "@/utils/supabase/server"
 import { headers } from "next/headers"
+
+export async function clearData(userID: string) {
+  const supabaseClient = await createClient()
+
+  const deletedPosts = await supabaseClient
+    .from("posts")
+    .delete()
+    .in("id", [userID])
+
+  const deletedSavedPosts = await supabaseClient
+    .from("savedPosts")
+    .delete()
+    .in("userID", [userID])
+}
+
+export async function deleteAccount(userID: string) {
+  logOut()
+  
+  const supabaseAdmin = await createAdmin()
+  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userID)
+}
 
 export async function logIn(formData: FormData) {
   const email = formData.get("email") as string
@@ -23,7 +45,6 @@ export async function logIn(formData: FormData) {
 
 export async function logOut() {
   const supabaseClient = await createClient()
-
   await supabaseClient.auth.signOut()
 }
 

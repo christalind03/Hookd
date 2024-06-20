@@ -34,7 +34,7 @@ const navLinks = [
   },
   {
     label: "Settings",
-    href: "/settings",
+    href: "/account",
     icon: <GearIcon />,
   },
 ]
