@@ -6,10 +6,13 @@ import { convertTimestamp } from "@/utils/convertTimestamp"
 import { deletePost, savePost } from "@/actions/postActions"
 import { supabaseClient } from "@/utils/supabase/client"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/useToast"
 
 // UI Components
 import { Badge } from "@/components/ui/Badge"
 import { PostActions } from "@/components/App/Post/PostActions"
+import { ToastAction } from "@/components/ui/Toast"
 
 type Props = {
   postData: Post
@@ -17,9 +20,11 @@ type Props = {
 }
 
 export function Post({ postData, userID }: Props) {
+  const appRouter = useRouter()
   const [imageURL, setImageURL] = useState<string>("")
   const [isActive, setIsActive] = useState<boolean>(true)
   const [isFavorite, setIsFavorite] = useState<boolean>(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     async function fetchFavorite() {
@@ -58,6 +63,36 @@ export function Post({ postData, userID }: Props) {
     if (userID) {
       await savePost(userID, postData.id, isFavorite)
       setIsFavorite(!isFavorite)
+
+      if (!isFavorite) {
+        toast({
+          title: "💖 Post Saved!",
+          description: "Post saved successfully!",
+          action: (
+            <ToastAction
+              altText="View"
+              onClick={() => appRouter.push("/saved")}
+            >
+              View
+            </ToastAction>
+          ),
+        })
+      } else {
+        toast({
+          title: "💔 Post Unsaved",
+          description: "Post unsaved successfully.",
+          action: (
+            <ToastAction
+              altText="Undo"
+              onClick={() => {
+                setIsFavorite(true)
+              }}
+            >
+              Undo
+            </ToastAction>
+          ),
+        })
+      }
     }
   }
 

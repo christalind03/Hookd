@@ -6,9 +6,20 @@ import { useRouter } from "next/navigation"
 
 // UI Components
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/AlertDialog"
+import {
   DotsHorizontalIcon,
-  BookmarkFilledIcon,
-  BookmarkIcon,
+  HeartFilledIcon,
+  HeartIcon,
 } from "@radix-ui/react-icons"
 import {
   DropdownMenu,
@@ -40,82 +51,111 @@ export function PostActions({
   const { toast } = useToast()
 
   return (
-    <DropdownMenu>
-      <DropdownMenuContent align="end" className="w-36" forceMount>
-        <DropdownMenuItem
-          onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
+    <AlertDialog>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Post?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action is irreversible and will permanently delete the post and
+            all content associated with it.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-            navigator.clipboard.writeText(
-              `${window.location.origin}/post/${postID}`
-            )
+        <AlertDialogFooter>
+          <AlertDialogCancel
+            onClick={(event) => {
+              event.stopPropagation()
 
-            toast({
-              title: "🔗 Link Copied",
-              description: "Link copied to clipboard.",
-            })
-          }}
-        >
-          <IconButton text="Copy Link" icon={<Link2Icon />} />
-        </DropdownMenuItem>
+              setTimeout(() => (document.body.style.pointerEvents = ""), 500)
+            }}
+          >
+            Cancel
+          </AlertDialogCancel>
 
-        <DropdownMenuItem
-          onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
+          <AlertDialogAction
+            onClick={(event) => {
+              event.stopPropagation()
 
-            onSave()
-          }}
-        >
-          <IconButton
-            text="Save"
-            icon={
-              isFavorite ? (
-                <BookmarkFilledIcon className="text-yellow-500" />
-              ) : (
-                <BookmarkIcon />
+              onDelete()
+            }}
+          >
+            Confirm
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+      <DropdownMenu>
+        <DropdownMenuContent align="end" className="w-36" forceMount>
+          <DropdownMenuItem
+            onClick={(event) => {
+              event.stopPropagation()
+
+              navigator.clipboard.writeText(
+                `${window.location.origin}/post/${postID}`
               )
-            }
-          />
-        </DropdownMenuItem>
 
-        {isAuthor && (
-          <Fragment>
-            <DropdownMenuSeparator />
+              toast({
+                title: "🔗 Link Copied",
+                description: "Link copied to clipboard.",
+              })
+            }}
+          >
+            <IconButton text="Copy Link" icon={<Link2Icon />} />
+          </DropdownMenuItem>
 
-            <DropdownMenuItem
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
+          <DropdownMenuItem
+            onClick={(event) => {
+              event.stopPropagation()
 
-                router.push(`/post/submit?edit=${postID}`)
-              }}
-            >
-              <IconButton text="Edit Post" icon={<Pencil1Icon />} />
-            </DropdownMenuItem>
+              onSave()
+            }}
+          >
+            <IconButton
+              text="Save"
+              icon={
+                isFavorite ? (
+                  <HeartFilledIcon className="text-red-500" />
+                ) : (
+                  <HeartIcon />
+                )
+              }
+            />
+          </DropdownMenuItem>
 
-            <DropdownMenuItem
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
+          {isAuthor && (
+            <Fragment>
+              <DropdownMenuSeparator />
 
-                onDelete()
-              }}
-            >
-              <IconButton
-                text="Delete Post"
-                icon={<TrashIcon />}
-                isDestructive
-              />
-            </DropdownMenuItem>
-          </Fragment>
-        )}
-      </DropdownMenuContent>
+              <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation()
 
-      <DropdownMenuTrigger asChild>
-        <DotsHorizontalIcon />
-      </DropdownMenuTrigger>
-    </DropdownMenu>
+                  router.push(`/post/submit?edit=${postID}`)
+                }}
+              >
+                <IconButton text="Edit Post" icon={<Pencil1Icon />} />
+              </DropdownMenuItem>
+
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem
+                  onClick={(event) => {
+                    event.stopPropagation()
+                  }}
+                >
+                  <IconButton
+                    text="Delete Post"
+                    icon={<TrashIcon />}
+                    isDestructive
+                  />
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </Fragment>
+          )}
+        </DropdownMenuContent>
+
+        <DropdownMenuTrigger asChild>
+          <DotsHorizontalIcon />
+        </DropdownMenuTrigger>
+      </DropdownMenu>
+    </AlertDialog>
   )
 }

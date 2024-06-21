@@ -48,6 +48,7 @@ export function DeleteAccount() {
               <TooltipTrigger>
                 <QuestionMarkCircledIcon />
               </TooltipTrigger>
+
               <TooltipContent className="bg-red-500">
                 <p>Permanently deletes your account.</p>
               </TooltipContent>
@@ -65,11 +66,15 @@ export function DeleteAccount() {
               and all associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onDelete()}>Confirm</AlertDialogAction>
+            <AlertDialogAction onClick={() => onDelete()}>
+              Confirm
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
+
         <AlertDialogTrigger asChild>
           <Button variant="destructive">Confirm</Button>
         </AlertDialogTrigger>
