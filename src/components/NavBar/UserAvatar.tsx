@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 // UI Components
-import { Avatar, AvatarFallback } from "@/components/ui/Avatar"
+import { Avatar, AvatarImage } from "@/components/ui/Avatar"
 import { BookmarkIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons"
 import {
   DropdownMenu,
@@ -41,7 +41,8 @@ const navLinks = [
 
 export function UserAvatar({ supabaseUser }: Props) {
   const router = useRouter()
-  const [menuState, setMenuState] = useState(false)
+  const [imageURL, setImageURL] = useState<string>("/Default.jpg")
+  const [menuState, setMenuState] = useState<boolean>(false)
 
   async function signOut() {
     await logOut()
@@ -57,7 +58,7 @@ export function UserAvatar({ supabaseUser }: Props) {
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-3 items-center justify-center">
                 <Avatar className="size-16">
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage src={imageURL} />
                 </Avatar>
 
                 <div className="font-normal leading-relaxed text-center">
@@ -91,7 +92,7 @@ export function UserAvatar({ supabaseUser }: Props) {
 
           <SheetTrigger>
             <Avatar>
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={imageURL} />
             </Avatar>
           </SheetTrigger>
         </Sheet>
@@ -130,7 +131,7 @@ export function UserAvatar({ supabaseUser }: Props) {
 
           <DropdownMenuTrigger asChild>
             <Avatar>
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={imageURL} />
             </Avatar>
           </DropdownMenuTrigger>
         </DropdownMenu>
