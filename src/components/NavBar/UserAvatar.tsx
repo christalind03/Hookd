@@ -40,13 +40,13 @@ const navLinks = [
 ]
 
 export function UserAvatar({ supabaseUser }: Props) {
-  const router = useRouter()
+  const appRouter = useRouter()
   const [imageURL, setImageURL] = useState<string>("/Default.jpg")
   const [menuState, setMenuState] = useState<boolean>(false)
 
   async function signOut() {
     await logOut()
-    router.refresh()
+    appRouter.refresh()
   }
 
   return (
@@ -84,7 +84,7 @@ export function UserAvatar({ supabaseUser }: Props) {
                 </Link>
               ))}
 
-              <div onClick={() => signOut()}>
+              <div className="cursor-pointer" onClick={() => signOut()}>
                 <IconButton text="Log Out" icon={<ExitIcon />} isDestructive />
               </div>
             </div>
@@ -114,17 +114,19 @@ export function UserAvatar({ supabaseUser }: Props) {
             <DropdownMenuSeparator />
 
             {navLinks.map((navLink) => (
-              <DropdownMenuItem key={navLink.href}>
-                <Link href={navLink.href} className="flex gap-3 items-center">
-                  {navLink.icon}
-                  {navLink.label}
-                </Link>
+              <DropdownMenuItem
+                key={navLink.href}
+                className="flex gap-3 items-center"
+                onSelect={() => appRouter.push(navLink.href)}
+              >
+                {navLink.icon}
+                {navLink.label}
               </DropdownMenuItem>
             ))}
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem onSelect={() => signOut()}>
               <IconButton text="Log Out" icon={<ExitIcon />} isDestructive />
             </DropdownMenuItem>
           </DropdownMenuContent>
