@@ -77,7 +77,7 @@ export function DisplayDrafts() {
               </div>
 
               <TrashIcon
-                className="text-destructive size-5"
+                className="size-5 hover:text-destructive"
                 onClick={(event) => {
                   event.preventDefault()
                   event.stopPropagation()
@@ -88,7 +88,7 @@ export function DisplayDrafts() {
             </div>
           ))
         ) : (
-          <p>Nothing to display...</p>
+          <p className="text-center">No drafts found.</p>
         )}
       </DialogContent>
 

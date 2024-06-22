@@ -74,6 +74,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
   const appRouter = useRouter()
   const { toast } = useToast()
   const [error, setError] = useState<Error>()
+  const [isSaving, setIsSaving] = useState<boolean>(false)
 
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -89,8 +90,12 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
   })
 
   const debounceDraft = useCallback(
-    debounce(() => {
+    debounce(async () => {
       if (!isEdit) {
+        if (!isSaving) {
+          setIsSaving(true)
+        }
+
         const formData = new FormData()
         const formValues = formHook.getValues()
 
@@ -100,7 +105,9 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
             : formData.append(formProperty, formValue)
         }
 
-        saveDraft(formData)
+        await saveDraft(formData)
+
+        setIsSaving(false)
 
         toast({
           title: "🎉 Autosave Complete",
@@ -286,7 +293,10 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
               <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <SelectContent>
                   {projectDifficulties.map((projectDifficulty) => (
-                    <SelectItem key={projectDifficulty} value={projectDifficulty}>
+                    <SelectItem
+                      key={projectDifficulty}
+                      value={projectDifficulty}
+                    >
                       {projectDifficulty}
                     </SelectItem>
                   ))}
@@ -301,7 +311,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={formHook.control}
           name="projectType"
@@ -329,8 +339,18 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
           )}
         />
 
-        <Button className="ml-auto" type="submit">
-          Submit Post
+        {/* {isSaving ? (
+          <Button className="ml-auto" type="submit" disabled>
+            Saving...
+          </Button>
+        ) : (
+          <Button className="ml-auto" type="submit">
+            Submit Post
+          </Button>
+        )} */}
+
+        <Button className="ml-auto" type="submit" disabled={isSaving}>
+          {isSaving ? "Saving..." : "Submit Post"}
         </Button>
       </form>
     </Form>
