@@ -23,3 +23,26 @@ export async function filterPosts(
 
   return data ? data : []
 }
+
+export async function filterSavedPosts(
+  userID: string,
+  queryLimit: number,
+  queryOffset: number,
+  projectDifficulties?: string[],
+  projectTypes?: string[]
+) {
+  const supabaseClient = await createClient()
+
+  const { data , error } = await supabaseClient.rpc("filterSavedPosts", {
+    userID,
+    queryLimit,
+    queryOffset,
+    projectDifficulties,
+    projectTypes,
+  })
+
+  console.log("Saved Post Data: ", data)
+  console.log("Saved Post Error: ", error)
+
+  return data ? data : []
+}

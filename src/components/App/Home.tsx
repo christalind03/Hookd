@@ -28,6 +28,7 @@ export function Home() {
     <Fragment>
       <FilterBar
         appRouter={appRouter}
+        rootDirectory="home"
         selectedDifficulties={parsedParams.projectDifficulty}
         selectedTypes={parsedParams.projectType}
       />

@@ -29,6 +29,7 @@ export function Results() {
     <Fragment>
       <FilterBar
         appRouter={appRouter}
+        rootDirectory="results"
         selectedDifficulties={parsedParams.projectDifficulty}
         selectedTypes={parsedParams.projectType}
       />

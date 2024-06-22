@@ -11,12 +11,14 @@ import { Separator } from "@/components/ui/Separator"
 
 type Props = {
   appRouter: AppRouterInstance
+  rootDirectory: string
   selectedDifficulties: string[] | undefined
   selectedTypes: string[] | undefined
 }
 
 export function FilterBar({
   appRouter,
+  rootDirectory,
   selectedDifficulties,
   selectedTypes,
 }: Props) {
@@ -37,7 +39,7 @@ export function FilterBar({
       )
     }
 
-    appRouter.push(`/home?${searchParams.join("&")}`)
+    appRouter.push(`/${rootDirectory}?${searchParams.join("&")}`)
   }
 
   return (
@@ -68,7 +70,7 @@ export function FilterBar({
         {(selectedDifficulties || selectedTypes) && (
           <div
             className="p-1 rounded-md hover:bg-accent"
-            onClick={() => appRouter.push("/home")}
+            onClick={() => appRouter.push(`/${rootDirectory}`)}
           >
             <Cross1Icon />
           </div>
