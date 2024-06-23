@@ -91,6 +91,7 @@ export async function signUp(formData: FormData) {
 
   // If the username is available, attempt to create a new account.
   if (await isUsernameAvailable(username)) {
+    const supabaseAdmin = await createAdmin()
     const supabaseClient = await createClient()
     const { data, error } = await supabaseClient.auth.signUp({
       email,
@@ -98,13 +99,13 @@ export async function signUp(formData: FormData) {
     })
 
     if (data.user) {
+      await supabaseAdmin.from("userRoles").insert({
+        id: data.user?.id,
+      })
+
       await supabaseClient.from("userProfiles").insert({
         id: data.user?.id,
         username,
-      })
-
-      await supabaseClient.from("userRoles").insert({
-        id: data.user?.id,
       })
     }
 
