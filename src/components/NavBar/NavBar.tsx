@@ -4,7 +4,7 @@
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useUser, useUserRole } from "@/components/UserProvider"
+import { useUser } from "@/components/UserProvider"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -31,7 +31,6 @@ export function NavBar() {
 
   const router = useRouter()
   const supabaseUser = useUser()
-  const supabaseUserRole = useUserRole()
   const [displaySearch, setDisplaySearch] = useState(false)
 
   function handleSubmit(formData: z.infer<typeof formSchema>) {
@@ -44,6 +43,67 @@ export function NavBar() {
 
   return (
     <div className="backdrop-blur-lg h-14 left-0 px-5 sticky top-0 z-10">
+      {/* Mobile NavBar */}
+      <div className="flex gap-5 h-14 items-center justify-between w-full lg:hidden">
+        {displaySearch ? (
+          <Form {...formHook}>
+            <form
+              className="flex gap-3 items-center justify-between w-full"
+              onSubmit={(formData) =>
+                formHook.handleSubmit(handleSubmit)(formData)
+              }
+            >
+              <FormField
+                name="searchQuery"
+                control={formHook.control}
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        placeholder="Search..."
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <Button type="button" variant="ghost" onClick={() => setDisplaySearch(false)}>Cancel</Button>
+            </form>
+          </Form>
+        ) : (
+          <Fragment>
+            <Link href="/home">
+              <h1 className="cursor-pointer font-extrabold text-nowrap text-2xl">
+                🧶 Hook'd
+              </h1>
+            </Link>
+
+            <div className="flex gap-3 items-center">
+              <MagnifyingGlassIcon
+                className="size-7 hover:text-blue-500"
+                onClick={() => setDisplaySearch(true)}
+              />
+
+              {["Admin", "Creator"].some((userRole) => userRole === supabaseUser?.userRole) && (
+                <Link href="/post/submit">
+                  <Pencil2Icon className="size-7 hover:text-blue-500" />
+                </Link>
+              )}
+
+              {supabaseUser ? (
+                <UserAvatar supabaseUser={supabaseUser} />
+              ) : (
+                <Link href="/login">
+                  <Button>Log In</Button>
+                </Link>
+              )}
+            </div>
+          </Fragment>
+        )}
+      </div>
+
       {/* Desktop NavBar */}
       <div className="flex gap-5 h-14 hidden items-center justify-between w-full lg:flex">
         <Link href="/home">
@@ -53,9 +113,9 @@ export function NavBar() {
         </Link>
 
         <div className="flex gap-3 items-center">
-          {supabaseUserRole === "Admin" && (
+          {["Admin", "Creator"].some((userRole) => userRole === supabaseUser?.userRole) && (
             <Link href="/post/submit">
-              <Pencil2Icon className="size-5 hover:text-blue-500" />
+              <Pencil2Icon className="size-7 hover:text-blue-500" />
             </Link>
           )}
 
@@ -96,66 +156,6 @@ export function NavBar() {
         </Form>
       </div>
 
-      {/* Mobile NavBar */}
-      <div className="flex gap-5 h-14 items-center justify-between w-full lg:hidden">
-        {displaySearch ? (
-          <Form {...formHook}>
-            <form
-              className="flex gap-3 items-center justify-between w-full"
-              onSubmit={(formData) =>
-                formHook.handleSubmit(handleSubmit)(formData)
-              }
-            >
-              <FormField
-                name="searchQuery"
-                control={formHook.control}
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Search..."
-                        className="bg-background"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <Button type="button" variant="ghost" onClick={() => setDisplaySearch(false)}>Cancel</Button>
-            </form>
-          </Form>
-        ) : (
-          <Fragment>
-            <Link href="/home">
-              <h1 className="cursor-pointer font-extrabold text-nowrap text-xl">
-                🧶 Hook'd
-              </h1>
-            </Link>
-
-            <div className="flex gap-3 items-center">
-              <MagnifyingGlassIcon
-                className="size-5 hover:text-blue-500"
-                onClick={() => setDisplaySearch(true)}
-              />
-
-              {supabaseUserRole === "Admin" && (
-                <Link href="/post/submit">
-                  <Pencil2Icon className="size-5 hover:text-blue-500" />
-                </Link>
-              )}
-
-              {supabaseUser ? (
-                <UserAvatar supabaseUser={supabaseUser} />
-              ) : (
-                <Link href="/login">
-                  <Button>Log In</Button>
-                </Link>
-              )}
-            </div>
-          </Fragment>
-        )}
-      </div>
     </div>
   )
 }

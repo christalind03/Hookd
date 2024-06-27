@@ -1,5 +1,6 @@
 // Business Logic
 import { createClient } from "@/utils/supabase/server"
+import { isUser } from "@/types/User"
 import { UserProvider } from "@/components/UserProvider"
 
 // UI Components
@@ -16,15 +17,13 @@ export default async function AppLayout({
   } = await supabaseClient.auth.getUser()
 
   const { data, error } = await supabaseClient
-    .from("userRoles")
-    .select("role")
-    .match({
-      id: user?.id,
+    .rpc("retrieveUserData", {
+      userID: user?.id,
     })
     .single()
 
   return (
-    <UserProvider supabaseUser={user} supabaseUserRole={data?.role}>
+    <UserProvider supabaseUser={isUser(data) ? data : undefined}>
       <NavBar />
       <Toaster />
 

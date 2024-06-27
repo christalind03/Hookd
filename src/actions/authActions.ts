@@ -21,6 +21,7 @@ export async function clearData(userID: string) {
 export async function deleteAccount(userID: string) {
   logOut()
   
+  // TODO: Delete the images associated with the user's drafts and posts as well.
   const supabaseAdmin = await createAdmin()
   const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userID)
 }
@@ -91,20 +92,17 @@ export async function signUp(formData: FormData) {
 
   // If the username is available, attempt to create a new account.
   if (await isUsernameAvailable(username)) {
-    const supabaseAdmin = await createAdmin()
     const supabaseClient = await createClient()
+
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
     })
-
+    
     if (data.user) {
-      await supabaseAdmin.from("userRoles").insert({
+      const userProfile = await supabaseClient.from("userProfiles").insert({
         id: data.user?.id,
-      })
-
-      await supabaseClient.from("userProfiles").insert({
-        id: data.user?.id,
+        email: data.user?.email,
         username,
       })
     }
@@ -123,13 +121,14 @@ export async function signUp(formData: FormData) {
   }
 }
 
-export async function updateProfile(userID: string, formData: FormData) {
+export async function updateProfile(id: string, formData: FormData) {
   const username = formData.get("username") as string
   const biography = formData.get("biography") as string
 
   // If the username is available, update the user's profile information.
   if (await isUsernameAvailable(username)) {
     const supabaseClient = await createClient()
+
     const { data, error } = await supabaseClient
       .from("userProfiles")
       .update({
@@ -137,7 +136,7 @@ export async function updateProfile(userID: string, formData: FormData) {
         biography,
       })
       .match({
-        id: userID,
+        id,
       })
 
     if (error) {

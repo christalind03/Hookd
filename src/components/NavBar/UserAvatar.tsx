@@ -1,7 +1,7 @@
 "use client"
 
 // Business Logic
-import { type User } from "@supabase/supabase-js"
+import { type UserMetadata } from "@supabase/supabase-js"
 import { logOut } from "@/actions/authActions"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -17,13 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
+import { Fragment } from "react"
 import { IconButton } from "@/components/IconButton"
 import Link from "next/link"
 import { Separator } from "../ui/Separator"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet"
 
 type Props = {
-  supabaseUser: User
+  supabaseUser: UserMetadata
 }
 
 const navLinks = [
@@ -50,7 +51,7 @@ export function UserAvatar({ supabaseUser }: Props) {
   }
 
   return (
-    <div>
+    <Fragment>
       {/* Mobile Navigation */}
       <div className="sm:hidden">
         <Sheet open={menuState} onOpenChange={(isOpen) => setMenuState(isOpen)}>
@@ -64,7 +65,7 @@ export function UserAvatar({ supabaseUser }: Props) {
                 <div className="font-normal leading-relaxed text-center">
                   <p className="font-bold">Hello,</p>
                   <p className="text-xs text-muted-foreground">
-                    {supabaseUser?.email}
+                    {supabaseUser?.username}
                   </p>
                 </div>
               </div>
@@ -90,8 +91,8 @@ export function UserAvatar({ supabaseUser }: Props) {
             </div>
           </SheetContent>
 
-          <SheetTrigger>
-            <Avatar>
+          <SheetTrigger asChild>
+            <Avatar className="size-8">
               <AvatarImage src={imageURL} />
             </Avatar>
           </SheetTrigger>
@@ -106,7 +107,7 @@ export function UserAvatar({ supabaseUser }: Props) {
               <div className="font-normal leading-relaxed">
                 <p className="font-bold">Hello,</p>
                 <p className="text-xs text-muted-foreground">
-                  {supabaseUser?.email}
+                  {supabaseUser?.username}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -132,12 +133,12 @@ export function UserAvatar({ supabaseUser }: Props) {
           </DropdownMenuContent>
 
           <DropdownMenuTrigger asChild>
-            <Avatar>
+            <Avatar className="size-8">
               <AvatarImage src={imageURL} />
             </Avatar>
           </DropdownMenuTrigger>
         </DropdownMenu>
       </div>
-    </div>
+    </Fragment>
   )
 }
