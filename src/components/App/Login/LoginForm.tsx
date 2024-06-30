@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 import Link from "next/link"
+import { Loading } from "@/components/Loading"
 
 const formSchema = z.object({
   email: z.string().email({
@@ -33,6 +34,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const [error, setError] = useState<Error>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       email: "",
@@ -45,6 +47,8 @@ export function LoginForm() {
   const router = useRouter()
 
   async function onSubmit(formValues: z.infer<typeof formSchema>) {
+    setIsLoading(true)
+
     const formData = new FormData()
 
     for (const [formProperty, formValue] of Object.entries(formValues)) {
@@ -55,10 +59,16 @@ export function LoginForm() {
 
     if (isError(serverResponse)) {
       setError(serverResponse)
+      setIsLoading(false)
+      
       return
     }
 
     router.push("/home")
+  }
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
