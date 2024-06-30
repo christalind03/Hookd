@@ -1,5 +1,5 @@
-import { Account } from "@/components/App/Account/Account/Account"
+import { Settings } from "@/components/App/Account/Settings/Settings"
 
 export default function Page() {
-  return <Account />
+  return <Settings />
 }

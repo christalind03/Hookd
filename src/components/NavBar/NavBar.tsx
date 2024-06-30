@@ -87,7 +87,7 @@ export function NavBar() {
               />
 
               {["Admin", "Creator"].some((userRole) => userRole === supabaseUser?.userRole) && (
-                <Link href="/post/submit">
+                <Link href="/submit">
                   <Pencil2Icon className="size-7 hover:text-blue-500" />
                 </Link>
               )}
@@ -114,7 +114,7 @@ export function NavBar() {
 
         <div className="flex gap-3 items-center">
           {["Admin", "Creator"].some((userRole) => userRole === supabaseUser?.userRole) && (
-            <Link href="/post/submit">
+            <Link href="/submit">
               <Pencil2Icon className="size-7 hover:text-blue-500" />
             </Link>
           )}

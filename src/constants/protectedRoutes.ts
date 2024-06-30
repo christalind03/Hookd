@@ -1,5 +1,6 @@
 export const protectedRoutes: { [userRole: string]: string[] } = {
   "Anon": [
+    "/account/farewell",
     "/login",
     "/signup",
   ],

@@ -7,10 +7,19 @@ import { headers } from "next/headers"
 export async function clearData(userID: string) {
   const supabaseClient = await createClient()
 
+  const deletedDrafts = await supabaseClient
+    .from("drafts")
+    .delete()
+    .in("creatorID", [userID])
+
+  await deleteFiles("drafts", userID)
+
   const deletedPosts = await supabaseClient
     .from("posts")
     .delete()
-    .in("id", [userID])
+    .in("creatorID", [userID])
+
+  await deleteFiles("posts", userID)
 
   const deletedSavedPosts = await supabaseClient
     .from("savedPosts")
@@ -19,9 +28,10 @@ export async function clearData(userID: string) {
 }
 
 export async function deleteAccount(userID: string) {
-  logOut()
+  await deleteFiles("drafts", userID)
+  await deleteFiles("posts", userID)
+  await logOut()
   
-  // TODO: Delete the images associated with the user's drafts and posts as well.
   const supabaseAdmin = await createAdmin()
   const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userID)
 }
@@ -150,6 +160,23 @@ export async function updateProfile(id: string, formData: FormData) {
       status: "404",
       message: "Username already taken.",
     }
+  }
+}
+
+async function deleteFiles(bucketName: string, userID: string) {
+  const supabaseClient = await createClient()
+
+  const { data, error } = await supabaseClient
+    .from(bucketName)
+    .select("id")
+    .match({
+      creatorID: userID,
+    })
+
+  if (data) {
+    const deletedFiles = await supabaseClient.storage
+      .from(bucketName)
+      .remove(data?.map(({ id }) => id))
   }
 }
 

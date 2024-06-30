@@ -64,7 +64,7 @@ export function DisplayDrafts() {
               className="flex gap-3 items-center justify-between px-3 py-1 rounded-md hover:bg-accent"
               onClick={() => {
                 setIsOpen(false)
-                router.replace(`/post/submit?draft=${draftData.id}`)
+                router.replace(`/submit?draft=${draftData.id}`)
               }}
             >
               <div>

@@ -331,7 +331,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
 
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Difficulty" />
+                    <SelectValue placeholder="Select Project Type" />
                   </SelectTrigger>
                 </FormControl>
               </Select>

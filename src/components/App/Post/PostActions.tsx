@@ -129,7 +129,7 @@ export function PostActions({
                 onClick={(event) => {
                   event.stopPropagation()
 
-                  router.push(`/post/submit?edit=${postID}`)
+                  router.push(`/submit?edit=${postID}`)
                 }}
               >
                 <IconButton text="Edit Post" icon={<Pencil1Icon />} />

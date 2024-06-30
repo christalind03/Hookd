@@ -1,8 +1,7 @@
 "use client"
 
 // Business Logic
-import { deleteAccount } from "@/actions/authActions"
-import { useRouter } from "next/navigation"
+import { clearData } from "@/actions/authActions"
 import { useUser } from "@/components/UserProvider"
 
 // UI Components
@@ -27,30 +26,21 @@ import {
 } from "@/components/ui/Tooltip"
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons"
 
-export function DeleteAccount() {
-  const appRouter = useRouter()
+export function ClearData() {
   const supabaseUser = useUser()
-
-  async function onDelete() {
-    await deleteAccount(supabaseUser?.id!)
-
-    // TODO: Change this to a success page?
-    appRouter.push("/home")
-  }
-
+  
   return (
     <div className="flex gap-3 items-center justify-between">
       <div className="flex flex-col gap-3">
         <Label className="flex font-bold gap-2">
-          Delete Account
+          Clear Data
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <QuestionMarkCircledIcon />
               </TooltipTrigger>
-
               <TooltipContent className="bg-red-500">
-                <p>Permanently deletes your account.</p>
+                <p>Permanently deletes all drafts, posts, and saved posts.</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -60,21 +50,17 @@ export function DeleteAccount() {
       <AlertDialog>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Account?</AlertDialogTitle>
+            <AlertDialogTitle>Clear Data?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action is irreversible will permanently delete your account
-              and all associated data.
+              This action is irreversible and will permanently delete all your
+              drafts, posts, and saved posts and cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onDelete()}>
-              Confirm
-            </AlertDialogAction>
+            <AlertDialogAction onClick={() => clearData(supabaseUser?.id!)}>Confirm</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-
         <AlertDialogTrigger asChild>
           <Button variant="destructive">Confirm</Button>
         </AlertDialogTrigger>

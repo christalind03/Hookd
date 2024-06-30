@@ -12,7 +12,7 @@ import { useUser } from "@/components/UserProvider"
 // UI Components
 import { DisplayDrafts } from "@/components/DisplayDrafts"
 import { Loading } from "@/components/Loading"
-import { SubmitForm } from "@/components/App/Post/Submit/SubmitForm"
+import { SubmitForm } from "@/components/App/Submit/SubmitForm"
 
 export function Submit() {
   const appRouter = useRouter()

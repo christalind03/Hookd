@@ -1,4 +1,4 @@
-import { Submit } from "@/components/App/Post/Submit/Submit"
+import { Submit } from "@/components/App/Submit/Submit"
 
 export default function Page() {
   return <Submit />

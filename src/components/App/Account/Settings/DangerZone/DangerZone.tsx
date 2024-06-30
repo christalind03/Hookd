@@ -1,8 +1,8 @@
 // Business Logic
 
 // UI Components
-import { ClearData } from "@/components/App/Account/Account/DangerZone/ClearData"
-import { DeleteAccount } from "@/components/App/Account/Account/DangerZone/DeleteAccount"
+import { ClearData } from "@/components/App/Account/Settings/DangerZone/ClearData"
+import { DeleteAccount } from "@/components/App/Account/Settings/DangerZone/DeleteAccount"
 import { Separator } from "@/components/ui/Separator"
 
 export function DangerZone() {
