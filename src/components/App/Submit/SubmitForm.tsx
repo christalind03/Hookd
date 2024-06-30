@@ -81,8 +81,12 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
       id: postData?.id || v4(),
       title: postData?.title || "",
       content: postData?.content || "",
-      projectDifficulty: postData?.projectDifficulty || "",
-      projectType: postData?.projectType || "",
+      projectDifficulty:
+        postData?.projectDifficulty !== "N/A"
+          ? postData?.projectDifficulty
+          : "" || "",
+      projectType:
+        postData?.projectType !== "N/A" ? postData?.projectType : "" || "",
       postImage: undefined,
     },
     mode: "onChange",
