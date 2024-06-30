@@ -48,7 +48,7 @@ export function Submit() {
     }
 
     fetchPostData()
-  }, [draftID, postID])
+  }, [draftID, postID, supabaseUser?.id])
 
   if (supabaseUser) {
     return (

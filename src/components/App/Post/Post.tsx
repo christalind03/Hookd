@@ -50,7 +50,7 @@ export function Post({ postData, userID }: Props) {
 
     setImageURL(data.publicUrl)
     fetchFavorite()
-  }, [])
+  }, [postData.id, userID])
 
   async function onDelete() {
     if (postData) {
@@ -132,7 +132,7 @@ export function Post({ postData, userID }: Props) {
             <Badge>{postData.projectType}</Badge>
           </div>
 
-          {imageURL && <img className="rounded-md" src={imageURL} />}
+          {imageURL && <img alt="Final Product" className="rounded-md" src={imageURL} />}
           <div dangerouslySetInnerHTML={{ __html: postData.content }} />
         </div>
       </div>
@@ -144,7 +144,7 @@ export function Post({ postData, userID }: Props) {
       <h3 className="font-extrabold text-3xl">Uh oh!</h3>
 
       <div className="text-center">
-        <p>This page doesn't exist.</p>
+        <p>This page doesn&apos;t exist.</p>
         <p>Try searching for something else.</p>
       </div>
     </div>

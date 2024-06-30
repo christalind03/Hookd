@@ -20,10 +20,12 @@ export function Results() {
     projectType: searchParams.get("projectType")?.split("|"),
     searchQuery: searchParams.get("searchQuery"),
   }
+  
+  const queryString = searchParams.toString()
 
   useEffect(() => {
     setRefreshToken(Math.random())
-  }, [searchParams.toString()])
+  }, [queryString])
 
   return (
     <Fragment>

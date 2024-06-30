@@ -51,7 +51,7 @@ export function PostPreview({ postData, userID = "" }: Props) {
 
     setImageURL(data.publicUrl)
     fetchFavorite()
-  }, [])
+  }, [postData.id, userID])
 
   async function onDelete() {
     if (postData) {
@@ -135,7 +135,7 @@ export function PostPreview({ postData, userID = "" }: Props) {
           <Badge>{postData.projectType}</Badge>
         </div>
 
-        {imageURL && <img className="rounded-md" src={imageURL} />}
+        {imageURL && <img alt="Final Product" className="rounded-md" src={imageURL} />}
       </Link>
     )
   }

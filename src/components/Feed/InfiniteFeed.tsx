@@ -3,7 +3,7 @@
 // Business Logic
 import { type Post } from "@/types/Post"
 import debounce from "lodash.debounce"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useUser } from "@/components/UserProvider"
 
 // UI Components
@@ -23,7 +23,7 @@ export function InfiniteFeed({ refreshToken, filterPosts }: Props) {
   const feedContainer = useRef<HTMLDivElement>(null)
   const supabaseUser = useUser()
 
-  const debounceScroll = useCallback(
+  const debounceScroll = useMemo(() =>
     debounce(() => {
       if (feedContainer.current && typeof window !== "undefined") {
         const { bottom } = feedContainer.current.getBoundingClientRect()
@@ -35,37 +35,54 @@ export function InfiniteFeed({ refreshToken, filterPosts }: Props) {
     []
   )
 
+  const loadPosts = useCallback((refreshPosts: boolean) => {
+    return new Promise(async () => {
+      setIsLoading(true)
+      setOffset((prevState) => 
+        refreshPosts ? 0 : prevState + 1
+      )
+
+      const newPosts = await filterPosts(25, offset)
+
+      setLoadedPosts((prevState) =>
+        refreshPosts ? newPosts : [...prevState, ...newPosts]
+      )
+      
+      setIsLoading(false)
+    })
+  }, [filterPosts, offset])
+
   useEffect(() => {
     loadPosts(true)
     window.addEventListener("scroll", debounceScroll)
 
     return () => window.removeEventListener("scroll", debounceScroll)
-  }, [refreshToken])
+  }, [debounceScroll, refreshToken, loadPosts])
 
   useEffect(() => {
     if (isVisible) {
       loadPosts(false)
     }
-  }, [isVisible])
+  }, [isVisible, loadPosts])
 
-  async function loadPosts(refreshPosts: boolean) {
-    setIsLoading(true)
-    setOffset((prevState) => {
-      if (refreshPosts) {
-        return 0
-      }
+  // async function loadPosts(refreshPosts: boolean) {
+  //   setIsLoading(true)
+  //   setOffset((prevState) => {
+  //     if (refreshPosts) {
+  //       return 0
+  //     }
 
-      return prevState + 1
-    })
+  //     return prevState + 1
+  //   })
 
-    const newPosts = await filterPosts(25, offset)
+  //   const newPosts = await filterPosts(25, offset)
 
-    setLoadedPosts((prevState) =>
-      refreshPosts ? newPosts : [...prevState, ...newPosts]
-    )
+  //   setLoadedPosts((prevState) =>
+  //     refreshPosts ? newPosts : [...prevState, ...newPosts]
+  //   )
 
-    setIsLoading(false)
-  }
+  //   setIsLoading(false)
+  // }
 
   return (
     <div
@@ -75,7 +92,7 @@ export function InfiniteFeed({ refreshToken, filterPosts }: Props) {
       {loadedPosts.length === 0 ? (
         <div className="flex flex-col items-center justify-center m-5">
           <h3 className="font-extrabold m-5 text-3xl">Uh oh!</h3>
-          <p>We couldn't find any results matching your search.</p>
+          <p>We couldn&apos;t find any results matching your search.</p>
           <p>Try searching for something else.</p>
         </div>
       ) : (

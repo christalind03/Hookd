@@ -9,7 +9,7 @@ import { projectDifficulties } from "@/constants/projectDifficulties"
 import { projectTypes } from "@/constants/projectTypes"
 import { saveDraft } from "@/actions/draftActions"
 import { supabaseClient } from "@/utils/supabase/client"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/useToast"
@@ -89,28 +89,28 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
     resolver: zodResolver(formSchema),
   })
 
-  const debounceDraft = useCallback(
-    debounce(async () => {
-      const formData = new FormData()
-      const formValues = formHook.getValues()
+  const debounceDraft = useMemo(
+    () =>
+      debounce(async () => {
+        const formData = new FormData()
+        const formValues = formHook.getValues()
 
-      for (const [formProperty, formValue] of Object.entries(formValues)) {
-        Array.isArray(formValue)
-          ? formData.append(formProperty, JSON.stringify(formValue))
-          : formData.append(formProperty, formValue)
-      }
+        for (const [formProperty, formValue] of Object.entries(formValues)) {
+          Array.isArray(formValue)
+            ? formData.append(formProperty, JSON.stringify(formValue))
+            : formData.append(formProperty, formValue)
+        }
 
-      await saveDraft(formData)
-      await new Promise((resolve) => setTimeout(resolve, 250))
+        await saveDraft(formData)
 
-      setIsSaving(false)
+        setIsSaving(false)
 
-      toast({
-        title: "🎉 Autosave Complete",
-        description: "Changes saved successfully.",
-      })
-    }, 1500),
-    []
+        toast({
+          title: "🎉 Autosave Complete",
+          description: "Changes saved successfully.",
+        })
+      }, 1500),
+    [formHook, toast]
   )
 
   const updateDraft = useCallback(() => {
@@ -121,7 +121,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
 
       debounceDraft()
     }
-  }, [])
+  }, [debounceDraft, isEdit, isSaving])
 
   useEffect(() => {
     async function fetchImage() {
@@ -147,7 +147,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
     }
 
     fetchImage()
-  }, [])
+  }, [formHook, postData])
 
   async function handleSubmit(formValues: z.infer<typeof formSchema>) {
     const formData = new FormData()

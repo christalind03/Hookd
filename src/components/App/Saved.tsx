@@ -21,9 +21,11 @@ export function Saved() {
     projectType: searchParams.get("projectType")?.split("|"),
   }
 
+  const queryString = searchParams.toString()
+
   useEffect(() => {
     setRefreshToken(Math.random())
-  }, [searchParams.toString()])
+  }, [queryString])
 
   return (
     <div className="flex flex-col gap-3">

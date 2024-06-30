@@ -19,10 +19,12 @@ export function Home() {
     projectDifficulty: searchParams.get("projectDifficulty")?.split("|"),
     projectType: searchParams.get("projectType")?.split("|"),
   }
+  
+  const queryString = searchParams.toString()
 
   useEffect(() => {
     setRefreshToken(Math.random())
-  }, [searchParams.toString()])
+  }, [queryString])
 
   return (
     <Fragment>

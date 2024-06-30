@@ -43,7 +43,7 @@ export function DisplayDrafts() {
     }
 
     fetchDrafts()
-  }, [refreshSeed])
+  }, [refreshSeed, supabaseUser?.id])
 
   async function removeDraft(draftID: string) {
     await deleteDraft(draftID)

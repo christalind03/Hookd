@@ -76,7 +76,7 @@ export function NavBar() {
           <Fragment>
             <Link href="/home">
               <h1 className="cursor-pointer font-extrabold text-nowrap text-2xl">
-                🧶 Hook'd
+                🧶 Hook&apos;d
               </h1>
             </Link>
 
@@ -108,7 +108,7 @@ export function NavBar() {
       <div className="flex gap-5 h-14 hidden items-center justify-between w-full lg:flex">
         <Link href="/home">
           <h1 className="cursor-pointer font-extrabold text-nowrap text-xl">
-            🧶 Hook'd
+            🧶 Hook&apos;d
           </h1>
         </Link>
 

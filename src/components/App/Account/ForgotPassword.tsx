@@ -64,7 +64,7 @@ export function ForgotPassword() {
     <Fragment>
       <h3 className="font-extrabold text-3xl text-center">Forgot Password?</h3>
       <p className="mb-3 text-sm text-pretty w-96">
-        Enter the email address associated with your account and we'll send you
+        Enter the email address associated with your account and we&apos;ll send you
         a link to reset your password.
       </p>
 
