@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useUser } from "@/components/UserProvider"
 
 // UI Components
-import { DisplayDrafts } from "@/components/DisplayDrafts"
+import { DisplayDrafts } from "@/components/App/Submit/DisplayDrafts"
 import { Loading } from "@/components/Loading"
 import { SubmitForm } from "@/components/App/Submit/SubmitForm"
 
