@@ -11,7 +11,7 @@ import Underline from "@tiptap/extension-underline"
 import { useEditor, EditorContent } from "@tiptap/react"
 
 // UI Components
-import { EditorToolbar } from "@/components/Editor/EditorToolbar"
+import { EditorToolbar } from "@/components/App/Submit/Editor/EditorToolbar/EditorToolbar"
 
 type Props = {
   content: string

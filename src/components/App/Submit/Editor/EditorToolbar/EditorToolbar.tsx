@@ -5,8 +5,8 @@ import { type Editor } from "@tiptap/react"
 import { useEffect, useState } from "react"
 
 // UI Components
-import { AlignText } from "@/components/Editor/Buttons/AlignText"
-import { ColorPicker } from "@/components/Editor/Buttons/ColorPicker"
+import { AlignText } from "@/components/App/Submit/Editor/EditorToolbar/AlignText"
+import { ColorPicker } from "@/components/App/Submit/Editor/EditorToolbar/ColorPicker"
 import {
   FontBoldIcon,
   FontItalicIcon,
@@ -14,7 +14,7 @@ import {
   HeadingIcon,
   ListBulletIcon,
 } from "@radix-ui/react-icons"
-import { InsertLink } from "@/components/Editor/Buttons/InsertLink"
+import { InsertLink } from "@/components/App/Submit/Editor/EditorToolbar/InsertLink"
 import { Toggle } from "@/components/ui/Toggle"
 
 type Props = {

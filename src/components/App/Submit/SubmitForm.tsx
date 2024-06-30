@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
-import { Editor } from "@/components/Editor/Editor"
+import { Editor } from "@/components/App/Submit/Editor/Editor"
 import { UploadIcon } from "@radix-ui/react-icons"
 
 type Props = {
@@ -91,32 +91,37 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
 
   const debounceDraft = useCallback(
     debounce(async () => {
-      if (!isEdit) {
-        if (!isSaving) {
-          setIsSaving(true)
-        }
+      const formData = new FormData()
+      const formValues = formHook.getValues()
 
-        const formData = new FormData()
-        const formValues = formHook.getValues()
-
-        for (const [formProperty, formValue] of Object.entries(formValues)) {
-          Array.isArray(formValue)
-            ? formData.append(formProperty, JSON.stringify(formValue))
-            : formData.append(formProperty, formValue)
-        }
-
-        await saveDraft(formData)
-
-        setIsSaving(false)
-
-        toast({
-          title: "🎉 Autosave Complete",
-          description: "Changes saved successfully.",
-        })
+      for (const [formProperty, formValue] of Object.entries(formValues)) {
+        Array.isArray(formValue)
+          ? formData.append(formProperty, JSON.stringify(formValue))
+          : formData.append(formProperty, formValue)
       }
+
+      await saveDraft(formData)
+      await new Promise((resolve) => setTimeout(resolve, 250))
+
+      setIsSaving(false)
+
+      toast({
+        title: "🎉 Autosave Complete",
+        description: "Changes saved successfully.",
+      })
     }, 1500),
     []
   )
+
+  const updateDraft = useCallback(() => {
+    if (!isEdit) {
+      if (!isSaving) {
+        setIsSaving(true)
+      }
+
+      debounceDraft()
+    }
+  }, [])
 
   useEffect(() => {
     async function fetchImage() {
@@ -172,7 +177,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
     <Form {...formHook}>
       <form
         className="flex flex-col space-y-5 w-full sm:w-[525px] md:w-[625px] lg:w-[725px]"
-        onChange={() => debounceDraft()}
+        onChange={() => updateDraft()}
         onSubmit={(formData) => formHook.handleSubmit(handleSubmit)(formData)}
       >
         {error && <DisplayError error={error} />}
@@ -205,7 +210,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
                   content={field.value}
                   onChange={(editorContent) => {
                     field.onChange(editorContent)
-                    debounceDraft()
+                    updateDraft()
                   }}
                 />
               </FormControl>
@@ -331,7 +336,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
 
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Project Type" />
+                    <SelectValue placeholder="Select Difficulty" />
                   </SelectTrigger>
                 </FormControl>
               </Select>
