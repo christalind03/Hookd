@@ -41,8 +41,5 @@ export async function filterSavedPosts(
     projectTypes,
   })
 
-  console.log("Saved Post Data: ", data)
-  console.log("Saved Post Error: ", error)
-
   return data ? data : []
 }

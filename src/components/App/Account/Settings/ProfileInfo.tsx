@@ -5,6 +5,7 @@ import { type Error, isError } from "@/types/Error"
 import { updateProfile } from "@/actions/authActions"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
+import { useToast } from "@/components/ui/useToast"
 import { useUser } from "@/components/UserProvider"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -39,16 +40,21 @@ const formSchema = z.object({
 export function ProfileInfo() {
   const supabaseUser = useUser()
   const [error, setError] = useState<Error>()
+  const [isSaving, setIsSaving] = useState<boolean>(false)
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      username: supabaseUser?.email,
-      biography: "",
+      username: supabaseUser?.username,
+      biography: supabaseUser?.biography,
     },
     mode: "onChange",
     resolver: zodResolver(formSchema),
   })
 
+  const { toast } = useToast()
+
   async function onSubmit(formValues: z.infer<typeof formSchema>) {
+    setIsSaving(true)
+
     const formData = new FormData()
 
     for (const [formProperty, formValue] of Object.entries(formValues)) {
@@ -56,10 +62,20 @@ export function ProfileInfo() {
     }
 
     const serverResponse = await updateProfile(supabaseUser?.id!, formData)
+    await new Promise((resolve) => setTimeout(resolve, 150))
 
     if (isError(serverResponse)) {
       setError(serverResponse)
+    } else {
+      setError(undefined)
+
+      toast({
+        title: "🎉 Profile Saved",
+        description: "Changes saved successfully.",
+      })
     }
+
+    setIsSaving(false)
   }
 
   return (
@@ -120,7 +136,9 @@ export function ProfileInfo() {
               Cancel
             </Button>
 
-            <Button type="submit">Save</Button>
+            <Button type="submit" disabled={isSaving}>
+              {isSaving ? "Saving..." : "Submit Post"}
+            </Button>
           </div>
         </form>
       </Form>

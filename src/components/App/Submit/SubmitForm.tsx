@@ -106,6 +106,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
         }
 
         await saveDraft(formData)
+        await new Promise((resolve) => setTimeout(resolve, 150))
 
         setIsSaving(false)
 
@@ -347,16 +348,6 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
             </FormItem>
           )}
         />
-
-        {/* {isSaving ? (
-          <Button className="ml-auto" type="submit" disabled>
-            Saving...
-          </Button>
-        ) : (
-          <Button className="ml-auto" type="submit">
-            Submit Post
-          </Button>
-        )} */}
 
         <Button className="ml-auto" type="submit" disabled={isSaving}>
           {isSaving ? "Saving..." : "Submit Post"}

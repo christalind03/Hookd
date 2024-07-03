@@ -137,12 +137,12 @@ export async function signUp(formData: FormData, captchaToken: string) {
   }
 }
 
-export async function updateProfile(id: string, formData: FormData) {
+export async function updateProfile(userID: string, formData: FormData) {
   const username = formData.get("username") as string
   const biography = formData.get("biography") as string
 
   // If the username is available, update the user's profile information.
-  if (await isUsernameAvailable(username)) {
+  if (await isUsernameAvailable(username, userID)) {
     const supabaseClient = await createClient()
 
     const { data, error } = await supabaseClient
@@ -152,7 +152,7 @@ export async function updateProfile(id: string, formData: FormData) {
         biography,
       })
       .match({
-        id,
+        id: userID,
       })
 
     if (error) {
@@ -186,7 +186,7 @@ async function deleteFiles(bucketName: string, userID: string) {
   }
 }
 
-async function isUsernameAvailable(username: string) {
+async function isUsernameAvailable(username: string, userID?: string) {
   const supabaseClient = await createClient()
 
   const { data, error } = await supabaseClient
@@ -196,6 +196,12 @@ async function isUsernameAvailable(username: string) {
       username,
     })
     .single()
+
+  if (data && userID) {
+    if (data.id === userID) {
+      return true
+    }
+  }
 
   return !!!data
 }
