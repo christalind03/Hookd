@@ -36,7 +36,7 @@ export async function deleteAccount(userID: string) {
   const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userID)
 }
 
-export async function logIn(formData: FormData) {
+export async function logIn(formData: FormData, captchaToken: string) {
   const email = formData.get("email") as string
   const password = formData.get("password") as string
   const supabaseClient = await createClient()
@@ -44,6 +44,9 @@ export async function logIn(formData: FormData) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email,
     password,
+    options: {
+      captchaToken,
+    }
   })
 
   if (error) {
@@ -95,7 +98,7 @@ export async function requestResetPassword(emailAddress: string) {
   }
 }
 
-export async function signUp(formData: FormData) {
+export async function signUp(formData: FormData, captchaToken: string) {
   const email = formData.get("email") as string
   const username = formData.get("username") as string
   const password = formData.get("password") as string
@@ -107,6 +110,9 @@ export async function signUp(formData: FormData) {
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
+      options: {
+        captchaToken,
+      }
     })
     
     if (data.user) {

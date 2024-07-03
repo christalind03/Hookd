@@ -4,8 +4,8 @@
 import { type Error, isError } from "@/types/Error"
 import { logIn } from "@/actions/authActions"
 import { useForm } from "react-hook-form"
+import { LegacyRef, RefObject, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -19,6 +19,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/Form"
+import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Input } from "@/components/ui/Input"
 import Link from "next/link"
 import { Loading } from "@/components/Loading"
@@ -43,8 +44,10 @@ export function LoginForm() {
     mode: "onChange",
     resolver: zodResolver(formSchema),
   })
-
+  
   const router = useRouter()
+  const captchaField = useRef<HCaptcha>(null)
+  const [captchaToken, setCaptchaToken] = useState<string>("")
 
   async function onSubmit(formValues: z.infer<typeof formSchema>) {
     setIsLoading(true)
@@ -55,7 +58,8 @@ export function LoginForm() {
       formData.append(formProperty, formValue)
     }
 
-    const serverResponse = await logIn(formData)
+    const serverResponse = await logIn(formData, captchaToken)
+    captchaField.current?.resetCaptcha()
 
     if (isError(serverResponse)) {
       setError(serverResponse)
@@ -74,7 +78,7 @@ export function LoginForm() {
   return (
     <Form {...formHook}>
       <form
-        className="flex flex-col gap-3 max-w-96 w-full"
+        className="flex flex-col gap-3 max-w-[19rem] w-full"
         onSubmit={formHook.handleSubmit(onSubmit)}
       >
         {error && <DisplayError error={error} />}
@@ -115,7 +119,17 @@ export function LoginForm() {
           )}
         />
 
-        <Button className="mt-3" type="submit">
+        <div className="flex items-center justify-center mt-5">
+          <HCaptcha
+            ref={captchaField}
+            sitekey="c71e0450-3290-48b0-9866-f2d4a75057a8"
+            onVerify={(token) => {
+              setCaptchaToken(token)
+            }}
+          />
+        </div>
+
+        <Button className="mt-1" type="submit">
           Log In
         </Button>
       </form>
