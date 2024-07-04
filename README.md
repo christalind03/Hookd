@@ -1,36 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Hook'd
+Hook'd is an online platform featuring a collection of free crochet patterns, allowing users to save their favorites with personalized accounts.
 
-## Getting Started
+## Overview
+Hook'd was originally developed for personal use to keep track of various crochet patterns found online through YouTube videos. However, throughout the development process, it evolved into a platform designed with other users in mind, offering a comprehensive and accessible database for crochet enthusiasts to explore and save their favorite patterns.
 
-First, run the development server:
+Explore the website yourself by clicking [here](https://discover-hookd.vercel.app/home).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technologies Used
+- [**Backend (Supabase)**](https://supabase.io/)
+- [**Framework (Next.js)**](https://nextjs.org/)
+- [**Hosting (Vercel)**](https://vercel.com/)
+- [**UI Components (shadcn)**](https://ui.shadcn.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
