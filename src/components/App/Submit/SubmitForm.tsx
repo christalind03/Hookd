@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 // UI Components
 import { Button } from "@/components/ui/Button"
 import { DisplayError } from "@/components/DisplayError"
+import { Editor } from "@/components/App/Submit/Editor/Editor"
 import {
   Form,
   FormControl,
@@ -28,6 +29,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form"
+import Image from "next/image"
 import { Input } from "@/components/ui/Input"
 import {
   Select,
@@ -36,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
-import { Editor } from "@/components/App/Submit/Editor/Editor"
 import { UploadIcon } from "@radix-ui/react-icons"
 
 type Props = {
@@ -273,11 +274,13 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
               </FormControl>
 
               {value ? (
-                <img
+                <Image
                   alt="Product Image"
-                  src={URL.createObjectURL(value)}
                   className="rounded-md"
                   onClick={() => uploadImage()}
+                  src={URL.createObjectURL(value)}
+                  width="750"
+                  height="500"
                 />
               ) : (
                 <div

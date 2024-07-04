@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/useToast"
 
 // UI Components
 import { Badge } from "@/components/ui/Badge"
+import Image from "next/image"
 import Link from "next/link"
 import { PostActions } from "@/components/App/Post/PostActions"
 import { ToastAction } from "@/components/ui/Toast"
@@ -94,6 +95,19 @@ export function PostPreview({ postData, userID = "" }: Props) {
           ),
         })
       }
+    } else {
+      toast({
+        title: "⚠️ Login Required",
+        description: "You must be logged in to perform this action.",
+        action: (
+          <ToastAction
+            altText="Log In"
+            onClick={() => appRouter.push("/login")}
+          >
+            Login
+          </ToastAction>
+        ),
+      })
     }
   }
 
@@ -135,7 +149,16 @@ export function PostPreview({ postData, userID = "" }: Props) {
           <Badge>{postData.projectType}</Badge>
         </div>
 
-        {imageURL && <img alt="Final Product" className="rounded-md" src={imageURL} />}
+        {imageURL && (
+          <Image
+            alt="Final Product"
+            className="opacity-0 rounded-md transition-opacity duration-&lsqb;2s&rsqb;"
+            onLoadingComplete={(image) => image.classList.remove("opacity-0")}
+            src={imageURL}
+            width="750"
+            height="500"
+          />
+        )}
       </Link>
     )
   }
