@@ -152,8 +152,8 @@ export function PostPreview({ postData, userID = "" }: Props) {
         {imageURL && (
           <Image
             alt="Final Product"
-            className="opacity-0 rounded-md transition-opacity duration-&lsqb;2s&rsqb;"
-            onLoadingComplete={(image) => image.classList.remove("opacity-0")}
+            className="opacity-0 rounded-md transition-opacity duration-&lsqb;1s&rsqb;"
+            onLoad={(image) => image.currentTarget.classList.remove("opacity-0")}
             src={imageURL}
             width="750"
             height="500"
