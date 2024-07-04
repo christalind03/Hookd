@@ -3,7 +3,7 @@
 // Business Logic
 import { type Post } from "@/types/Post"
 import debounce from "lodash.debounce"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useUser } from "@/components/UserProvider"
 
 // UI Components
@@ -16,9 +16,8 @@ type Props = {
 }
 
 export function InfiniteFeed({ refreshToken, filterPosts }: Props) {
-  const [offset, setOffset] = useState<number>(0)
+  const offsetRef = useRef<number>(0)
   const [loadedPosts, setLoadedPosts] = useState<Post[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const feedContainer = useRef<HTMLDivElement>(null)
   const supabaseUser = useUser()
@@ -36,37 +35,39 @@ export function InfiniteFeed({ refreshToken, filterPosts }: Props) {
     []
   )
 
+  const loadPosts = useCallback(
+    async (refreshPosts: boolean) => {
+      if (refreshPosts) {
+        offsetRef.current = 0
+      } else {
+        offsetRef.current += 1
+      }
+
+      const newPosts = await filterPosts(3, offsetRef.current)
+
+      setLoadedPosts((prevState) => {
+        if (refreshPosts) {
+          return newPosts
+        }
+
+        return [...prevState, ...newPosts]
+      })
+    },
+    [filterPosts]
+  )
+
   useEffect(() => {
     loadPosts(true)
     window.addEventListener("scroll", debounceScroll)
 
     return () => window.removeEventListener("scroll", debounceScroll)
-  }, [refreshToken])
-  
+  }, [debounceScroll, refreshToken, loadPosts])
+
   useEffect(() => {
     if (isVisible) {
       loadPosts(false)
     }
-  }, [isVisible])
-
-  async function loadPosts(refreshPosts: boolean) {
-    let updatedOffset = 0
-
-    if (!refreshPosts) {
-      updatedOffset = offset + 1
-    }
-
-    const newPosts = await filterPosts(3, updatedOffset)
-
-    setOffset(updatedOffset)
-    setLoadedPosts((prevState) => {
-      if (refreshPosts) {
-        return newPosts
-      }
-
-      return [...prevState, ...newPosts]
-    })
-  }
+  }, [isVisible, loadPosts])
 
   return (
     <div
