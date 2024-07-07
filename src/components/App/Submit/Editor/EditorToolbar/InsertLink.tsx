@@ -2,6 +2,7 @@
 
 // Business Logic
 import { useForm } from "react-hook-form"
+import { useState } from "react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -37,6 +38,7 @@ const formSchema = z.object({
 })
 
 export function InsertLink({ onSubmit }: Props) {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       text: "",
@@ -53,7 +55,7 @@ export function InsertLink({ onSubmit }: Props) {
   }
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverContent>
         <Form {...formHook}>
           <form
@@ -91,7 +93,9 @@ export function InsertLink({ onSubmit }: Props) {
               )}
             />
 
-            <Button type="submit">Insert Link</Button>
+            <Button type="submit" onClick={() => setIsOpen(false)}>
+              Insert Link
+            </Button>
           </form>
         </Form>
       </PopoverContent>

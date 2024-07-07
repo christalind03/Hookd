@@ -24,22 +24,15 @@ export function Editor({ content, onChange }: Props) {
     editorProps: {
       attributes: {
         class:
-          "bg-background border border-input min-h-60 p-3 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+          "border border-input min-h-60 p-3 prose rounded-md [&_ol]:list-decimal [&_ul]:list-disc rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
       },
     },
     extensions: [
       Color,
-      Link.extend({
-        addKeyboardShortcuts() {
-          return {
-            "Mod-k": () => this.editor.commands.toggleLink({ href: "https://example.com", target: "_blank" })
-          }
-        },
-        inclusive: false,
-      }).configure({
+      Link.configure({
         HTMLAttributes: {
-          class: "text-blue-500 underline"
-        }
+          class: "text-blue-500 underline",
+        },
       }),
       StarterKit.configure({
         heading: {
@@ -50,17 +43,12 @@ export function Editor({ content, onChange }: Props) {
         },
         paragraph: {
           HTMLAttributes: {
-            class: "text-sm",
-          }
-        },
-        listItem: {
-          HTMLAttributes: {
-            class: "list-disc ml-5",
+            class: "min-h-[1rem] text-sm",
           },
-        }
+        },
       }),
       TextAlign.configure({
-        types: ["heading", "paragraph"]
+        types: ["heading", "paragraph"],
       }),
       TextStyle,
       Typography,

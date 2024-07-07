@@ -76,6 +76,7 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
   const { toast } = useToast()
   const [error, setError] = useState<Error>()
   const [isSaving, setIsSaving] = useState<boolean>(false)
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
 
   const formHook = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -85,9 +86,8 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
       projectDifficulty:
         postData?.projectDifficulty !== "N/A"
           ? postData?.projectDifficulty
-          : "" || "",
-      projectType:
-        postData?.projectType !== "N/A" ? postData?.projectType : "" || "",
+          : "",
+      projectType: postData?.projectType !== "N/A" ? postData?.projectType : "",
       postImage: undefined,
     },
     mode: "onChange",
@@ -156,6 +156,8 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
   }, [formHook, postData])
 
   async function handleSubmit(formValues: z.infer<typeof formSchema>) {
+    setIsSubmitted(true)
+
     const formData = new FormData()
 
     for (const [formProperty, formValue] of Object.entries(formValues)) {
@@ -167,12 +169,12 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
     const serverResponse = await onSubmit(formData)
 
     if (isError(serverResponse)) {
-      setError(serverResponse)
-      return
+      window.scrollTo(0, 0)
+      setIsSubmitted(false)
+      return setError(serverResponse)
     }
 
     appRouter.push("/home")
-    return
   }
 
   function uploadImage() {
@@ -352,8 +354,16 @@ export function SubmitForm({ isEdit = false, postData, onSubmit }: Props) {
           )}
         />
 
-        <Button className="ml-auto" type="submit" disabled={isSaving}>
-          {isSaving ? "Saving..." : "Submit Post"}
+        <Button
+          className="ml-auto"
+          type="submit"
+          disabled={isSaving || isSubmitted}
+        >
+          {isSaving
+            ? "Saving..."
+            : isSubmitted
+            ? "Uploading..."
+            : "Submit Post"}
         </Button>
       </form>
     </Form>

@@ -98,7 +98,7 @@ export function EditorToolbar({ editor }: Props) {
         <InsertLink
           onSubmit={(formData) => {
             editor.commands.insertContent(
-              `<a href={${formData.href}}>${formData.text}</a>`
+              `<a href=${formData.href} target="_blank">${formData.text}</a>`
             )
           }}
         />

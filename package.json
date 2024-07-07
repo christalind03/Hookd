@@ -51,6 +51,7 @@
     "zod": "^3.22.5"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^18",

@@ -143,7 +143,8 @@ export function Post({ postData, userID }: Props) {
               height="500"
             />
           )}
-          <div dangerouslySetInnerHTML={{ __html: postData.content }} />
+
+          <div className="prose" dangerouslySetInnerHTML={{ __html: postData.content }} />
         </div>
       </div>
     )

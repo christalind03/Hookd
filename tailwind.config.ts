@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss"
 import { fontFamily } from "tailwindcss/defaultTheme"
+import { ThemeConfig } from "tailwindcss/types/config"
 
 const config = {
   content: [
@@ -63,10 +64,7 @@ const config = {
         },
       },
       fontFamily: {
-        sans: [
-          "var(--font-sans)",
-          ...fontFamily.sans,
-        ]
+        sans: ["var(--font-sans)", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
@@ -78,9 +76,22 @@ const config = {
           to: { height: "0" },
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            ">*": {
+              marginTop: "5px",
+              marginBottom: "5px",
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography")
+  ],
   prefix: "",
 } satisfies Config
 
