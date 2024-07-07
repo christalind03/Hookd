@@ -24,7 +24,7 @@ export function Editor({ content, onChange }: Props) {
     editorProps: {
       attributes: {
         class:
-          "border border-input min-h-60 p-3 prose rounded-md [&_ol]:list-decimal [&_ul]:list-disc rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+          "border border-input max-w-none min-h-60 p-3 prose rounded-md [&_ol]:list-decimal [&_ul]:list-disc focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
       },
     },
     extensions: [
