@@ -43,7 +43,7 @@ const navLinks = [
 export function UserAvatar({ supabaseUser }: Props) {
   const appRouter = useRouter()
   const [imageURL, setImageURL] = useState<string>("/Default.jpg")
-  const [menuState, setMenuState] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   async function signOut() {
     await logOut()
@@ -54,7 +54,7 @@ export function UserAvatar({ supabaseUser }: Props) {
     <Fragment>
       {/* Mobile Navigation */}
       <div className="sm:hidden">
-        <Sheet open={menuState} onOpenChange={(isOpen) => setMenuState(isOpen)}>
+        <Sheet open={isOpen} onOpenChange={(isOpen) => setIsOpen(isOpen)}>
           <SheetContent>
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-3 items-center justify-center">
@@ -79,6 +79,7 @@ export function UserAvatar({ supabaseUser }: Props) {
                   className={`flex gap-3 items-center text-sm ${
                     navLink.label === "Settings" ? "" : ""
                   }`}
+                  onClick={() => setIsOpen(false)}
                 >
                   {navLink.icon}
                   {navLink.label}
